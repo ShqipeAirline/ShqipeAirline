@@ -1,0 +1,94 @@
+.login-back{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url("src/images/ls_background.png") no-repeat center center;
+  background-size: cover; 
+  margin: 0;
+  padding: 0;
+}
+
+.whiteBox{
+  background-color: white;
+
+  padding: 20px;
+  padding-top: 30px;
+  min-width: 300px;
+  height: 60%;
+  width: 25%;
+  border: 1px solid #333;
+  border-radius: 30px;
+
+}
+
+.whiteBox-signup{
+  background-color: white;
+  padding: 20px;
+  padding-bottom: 22px;
+  min-width: 300px;
+  height: 70%;
+  width: 30%;
+  border: 1px solid #333;
+  border-radius: 30px;
+}
+
+.itemBox1{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-left: -80px;
+  margin-top: -45px;
+}
+
+.itemBox-2{
+  padding-left: 127px;
+  margin-top: -85px;
+  color:#333;
+  margin-bottom: 50px;
+}
+
+.itemBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  
+}
+
+
+
+.form-field
+{
+  width: 99%; 
+}
+
+.register-link{
+  text-decoration: none;
+  color: gray;
+  margin-top: -5px;
+}
+
+.itemBox-3{
+  margin-top: -20px;
+  display: flex;
+  flex-direction: row;
+  gap:15px;
+}
+
+
+
+.itemBox-4{
+  margin-top: 15px;
+  display: flex;
+  flex-direction: row;
+  gap:15px;
+  margin-bottom: 7px;
+}
+
+.itemBox-4 > :first-child {
+  margin-top: 17px;
+}
