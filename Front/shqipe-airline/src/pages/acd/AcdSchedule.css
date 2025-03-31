@@ -1,0 +1,16 @@
+.schedule-page {
+  padding: 20px;
+}
+
+.schedule-page h1 {
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 24px;
+}
+
+.schedule-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} 

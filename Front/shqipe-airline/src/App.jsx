@@ -1,19 +1,23 @@
-import { useState } from 'react'
 import './App.css'
 import Register from './components/Register'
 import Login from './components/Login'
 import {Routes, Route} from 'react-router-dom'
-import Acd from './components/Acd'
+import AcdLayout from './layouts/AcdLayout'
+import Dashboard from './pages/acd/AcdDashboard'
+import Schedule from './pages/acd/AcdSchedule'
 
 function App() {
-  
   return (
     <>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="register/" element={<Register />} />
-        <Route path="/acd-dashboard" element={<Acd />} />
-
+        
+        {/* Air Control Department Routes */}
+        <Route path="/acd-dashboard" element={<AcdLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="schedule" element={<Schedule />} />
+        </Route>
       </Routes>
     </>
   )
