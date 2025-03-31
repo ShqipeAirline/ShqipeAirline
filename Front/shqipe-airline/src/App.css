@@ -77,6 +77,7 @@
   display: flex;
   flex-direction: row;
   gap:15px;
+  margin-bottom: 10px;
 }
 
 
@@ -91,4 +92,44 @@
 
 .itemBox-4 > :first-child {
   margin-top: 17px;
+}
+
+.formbttn{
+  padding: 15px;
+  color:white;
+  font-weight: bold;
+  background-color:rgb(24, 71, 159);
+  border: 1px solid white;
+  border-radius: 10px;
+}
+
+.acd-navbar
+{
+  height: 100vh;
+  width: 15%;
+  padding-left: 0;
+  margin-left: 0;
+  background-color: #030522;
+  padding-top: 3vh;
+
+
+}
+
+.navbar{
+  color:#84827E;
+  text-decoration: none;
+  font-weight: bold;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  padding-left: 4vh;
+  display: flex;
+  align-items: flex-start; 
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 10px; 
+}
+
+.navbar:hover
+{
+  background-color: #E8DBAC; 
+  color: black;
 }
