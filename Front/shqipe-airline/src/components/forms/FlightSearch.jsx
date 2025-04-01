@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaExchangeAlt } from "react-icons/fa";
 import "./../../pages/acd/AcdSchedule.css";
+import deviderv from '../../images/dividerv.png';
 
 const flights = [
   { departureTime: "10:00", departurePlace: "Tirana", arrivalTime: "13:00", arrivalPlace: "Berlin", duration: "3 hours" },
@@ -9,14 +10,14 @@ const flights = [
 ];
 
 export default function FlightSearch({ setResults }) {
-  const [from, setFrom] = useState(""); // Default empty
-  const [to, setTo] = useState(""); // Default empty
-  const [date, setDate] = useState(""); // Default empty
-  const [seatClass, setSeatClass] = useState(""); // Default empty
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState(""); 
+  const [date, setDate] = useState(""); 
+  const [seatClass, setSeatClass] = useState("");
 
   const handleSearch = () => {
     if (!from && !to && !date) {
-      setResults(flights); // Show all flights if no input is provided
+      setResults(flights); 
       return;
     }
 
@@ -59,6 +60,7 @@ export default function FlightSearch({ setResults }) {
             placeholder="Arrival city"
           />
         </div>
+        <img src={deviderv} alt="" />
         <div className="flight-search-group">
           <label>Departure Date</label>
           <input
