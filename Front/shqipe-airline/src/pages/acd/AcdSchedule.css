@@ -10,7 +10,52 @@
 
 .schedule-content {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 15px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px #E4C779 solid;
+  margin-bottom: 16px;
 } 
+
+
+
+.schedule-info
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  
+}
+
+.info-flight-route{
+  padding-top: 25px;
+
+}
+
+.info-flight-route h6{
+  text-align: center;
+  margin-top: 0px;
+  color: #84827E;
+}
+
+.info-flight h5{
+  margin-top: -10px;
+  text-align: center;
+  color: #84827E;
+}
+
+.divider{
+  width:100%;
+  padding-bottom: 20px;
+}
+
+.view-button{
+  margin-left: 20px;
+  padding: 10px;
+  color:white;
+
+  text-decoration: none;
+  background-color:#222222;
+  border: 1px solid #222222;
+  border-radius: 15px;
+}

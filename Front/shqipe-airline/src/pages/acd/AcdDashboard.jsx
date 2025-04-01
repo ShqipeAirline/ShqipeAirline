@@ -54,7 +54,7 @@ const AcdDashboard = () => {
       title: 'View all flights',
       description: 'Have a look at all flights available.',
       icon: <img src={eye} alt="eye" />,
-      link: '/view-flights'
+      link: '/acd-dashboard/schedule'
     },
     {
       id: 6,
