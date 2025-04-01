@@ -59,3 +59,82 @@
   border: 1px solid #222222;
   border-radius: 15px;
 }
+
+
+
+.flight-search-container {
+  padding: 16px;
+  max-width: 100%;
+  margin: 2.5rem auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+}
+
+.flight-search-fields {
+  display: flex;
+  gap: 80px;
+}
+
+.flight-search-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.flight-search-group label {
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.flight-search-group input {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.swap-button {
+  background-color: #f0f0f0;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #555;
+}
+
+.search-button {
+  background-color: black;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+.flight-search-group select {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid white;
+  border-radius: 5px;
+  background-color: white;
+  width: 100%;
+  max-width: 250px;
+  box-sizing: border-box; 
+  transition: all 0.3s ease-in-out;
+}
+
+
+.flight-search-group input,
+.flight-search-group select,
+.search-button,
+.swap-button {
+  font-family: Arial, sans-serif; 
+  font-size: 14px; 
+  padding: 6px 12px; 
+  border-radius: 7px; 
+  border: 1px solid #ccc; 
+  box-sizing: border-box; 
+  transition: all 0.3s ease-in-out;
+}
