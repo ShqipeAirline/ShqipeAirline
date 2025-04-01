@@ -3,14 +3,15 @@ import { FaExchangeAlt } from "react-icons/fa";
 import "./../../pages/acd/AcdSchedule.css";
 
 const flights = [
-  {  departurePlace: "Tirana", arrivalPlace: "Berlin", duration: "3 hours" },
-  {  departurePlace: "London",  arrivalPlace: "Rome", duration: "3.5 hours" },
-  {  departurePlace: "Paris",  arrivalPlace: "New York", duration: "6.5 hours" },
+  { departureTime: "10:00", departurePlace: "Tirana", arrivalTime: "13:00", arrivalPlace: "Berlin", duration: "3 hours" },
+  { departureTime: "12:30", departurePlace: "London", arrivalTime: "16:00", arrivalPlace: "Rome", duration: "3.5 hours" },
+  { departureTime: "14:15", departurePlace: "Paris", arrivalTime: "18:45", arrivalPlace: "New York", duration: "6.5 hours" },
 ];
 
 export default function FlightSearch({ setResults }) {
   const [from, setFrom] = useState(""); // Default empty
   const [to, setTo] = useState(""); // Default empty
+  const [date, setDate] = useState(""); // Default empty
   const [seatClass, setSeatClass] = useState(""); // Default empty
 
   const handleSearch = () => {
@@ -59,17 +60,14 @@ export default function FlightSearch({ setResults }) {
           />
         </div>
         <div className="flight-search-group">
-          <label>Seat Class</label>
-          <select
-            value={seatClass}
-            onChange={(e) => setSeatClass(e.target.value)}
-          >
-            <option value="">Select a seat class</option>
-            <option value="Economy">Economy</option>
-            <option value="Business">Business</option>
-            <option value="First Class">First Class</option>
-          </select>
+          <label>Departure Date</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
         </div>
+        
         <button className="search-button" onClick={handleSearch}>
           Search
         </button>
