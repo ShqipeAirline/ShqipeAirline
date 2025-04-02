@@ -39,7 +39,7 @@ const flights = [
   },
 ];
 
-const AcdSchedule = () => {
+const AcdAddFlight = () => {
   const [searchResults, setSearchResults] = useState(flights);
   const [showEditModal, setShowEditModal] = useState(false);
   const [addFlight, setAddFlight] = useState({
@@ -185,4 +185,4 @@ const AcdSchedule = () => {
   );
 };
 
-export default AcdSchedule;
+export default AcdAddFlight;
