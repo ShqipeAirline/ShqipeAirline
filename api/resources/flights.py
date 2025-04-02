@@ -9,8 +9,8 @@ from flask_jwt_extended import (
 from datetime import datetime
 
 from DB import db
-from models import Flight  # Ensure Flight is correctly imported from your models
-from schemas import PlainFlightSchema, FlightSchema  # Adjust imports based on your schemas file
+from models import Flight
+from schemas import PlainFlightSchema, FlightSchema
 
 # Schema for updating flights (partial updates allowed)
 class FlightUpdateSchema(Schema):
