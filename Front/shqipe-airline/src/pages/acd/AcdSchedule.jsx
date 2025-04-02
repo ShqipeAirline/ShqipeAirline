@@ -7,27 +7,54 @@ import { Link } from 'react-router-dom';
 import FlightSearch from '../../components/forms/FlightSearch';
 
 const flights = [
-  { departureTime: '10:00', departurePlace: 'Tirana', arrivalTime: '13:00', arrivalPlace: 'Berlin', duration: '3 hours' },
-  { departureTime: '12:30', departurePlace: 'London', arrivalTime: '16:00', arrivalPlace: 'Rome', duration: '3.5 hours' },
-  { departureTime: '14:15', departurePlace: 'Paris', arrivalTime: '18:45', arrivalPlace: 'New York', duration: '6.5 hours' },
+  { 
+    id: 'SH-749789',
+    departureTime: '6:00 AM', 
+    departurePlace: 'Los Angeles', 
+    arrivalTime: '9:00 PM', 
+    arrivalPlace: 'New York', 
+    duration: '13 hours',
+    aircraft: 'Boeing 757 300',
+    airline: 'Shqipe Airline',
+    departureAirport: 'Los Angeles International Airport (LAX)',
+    arrivalAirport: 'John F. Kennedy International Airport (JFK)',
+    departureTerminal: 'Terminal B',
+    arrivalTerminal: 'Terminal 4',
+    date: 'June 1, 2025'
+  },
+  { 
+    id: 'SH-749790',
+    departureTime: '10:00 AM', 
+    departurePlace: 'Tirana', 
+    arrivalTime: '1:00 PM', 
+    arrivalPlace: 'Berlin', 
+    duration: '3 hours',
+    aircraft: 'Airbus A320',
+    airline: 'Shqipe Airline',
+    departureAirport: 'Tirana International Airport (TIA)',
+    arrivalAirport: 'Berlin Brandenburg Airport (BER)',
+    departureTerminal: 'Terminal 1',
+    arrivalTerminal: 'Terminal 2',
+    date: 'June 2, 2025'
+  },
 ];
 
 const AcdSchedule = () => {
-  const [searchResults, setSearchResults] = useState(flights); // Initialize with all flights
+  const [searchResults, setSearchResults] = useState(flights);
 
   return (
     <div className="schedule-page">
-      <FlightSearch setResults={setSearchResults} />
+      <FlightSearch setResults={setSearchResults} flights={flights} />
       <h1>Flight Schedule</h1>
       {searchResults.length === 0 ? (
         <p>No flights found for the selected search criteria.</p>
       ) : (
-        searchResults.map((flight, index) => (
-          <div className="schedule-content" key={index}>
+        searchResults.map((flight) => (
+          <div className="schedule-content" key={flight.id}>
             <div className="schedule-info">
               <div className="info-flight">
-                <h2>Shqipe Airline</h2>
-                <h5>Flight {index + 1}</h5>
+                <h2>{flight.airline}</h2>
+                <h5>Flight {flight.id}</h5>
               </div>
               <img src={deviderv} alt="divider vertical" />
               <div className="info-flight">
@@ -44,7 +71,9 @@ const AcdSchedule = () => {
               </div>
             </div>
             <img src={devider} alt="divider" className="divider" />
-            <Link className="view-button">View Details</Link>
+            <Link to={`flight-details/${flight.id}`} className="view-button">
+              View Details
+            </Link>
           </div>
         ))
       )}

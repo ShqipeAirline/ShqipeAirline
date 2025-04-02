@@ -5,6 +5,7 @@ import {Routes, Route} from 'react-router-dom'
 import AcdLayout from './layouts/AcdLayout'
 import Dashboard from './pages/acd/AcdDashboard'
 import Schedule from './pages/acd/AcdSchedule'
+import FlightDetails from './pages/acd/FlightDetails'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/acd-dashboard" element={<AcdLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="schedule" element={<Schedule />} />
+          <Route path="schedule/flight-details/:flightId" element={<FlightDetails />} />
         </Route>
       </Routes>
     </>
