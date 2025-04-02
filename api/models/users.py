@@ -1,16 +1,20 @@
 from DB import db
 
-from datetime import datetime
-
-class UserModel(db.Model):
-    __tablename__ = 'user'
-    user_id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), unique=True, nullable=False)
+class User(db.Model):
+    __tablename__ = 'User'
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(255), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
-    first_name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
+    role = db.Column(db.String(100),nullable=False,default='user')
+    first_name = db.Column(db.String(100), nullable=False)
+    last_name = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(20))
-    emergency_contact_phone = db.Column(db.String(20))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    account_status = db.Column(db.SmallInteger, nullable=False, default=1)
+    date_of_birth = db.Column(db.Date)
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
     last_login = db.Column(db.DateTime)
-    account_status = db.Column(db.Enum('active', 'inactive', 'suspended'), default='active')
+
+    # Relationships
+    bookings = db.relationship('Booking', backref='user', lazy=True)
+    feedbacks = db.relationship('Feedback', backref='user', lazy=True)
+    payment_methods = db.relationship('PaymentMethod', backref='user', lazy=True)

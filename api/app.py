@@ -4,6 +4,7 @@ from flask import Flask, jsonify
 from flask_smorest import Api
 
 from resources.users import blp as usersBlueprint
+from resources.flights import blp as flightsBlueprint
 from flask_jwt_extended import JWTManager
 from blocklist import BLOCKLIST
 from flask_migrate import Migrate
@@ -93,6 +94,7 @@ def create_app(db_url=None):
         )
 
     api.register_blueprint(usersBlueprint)
+    api.register_blueprint(flightsBlueprint)
     return app
 
 app = create_app()

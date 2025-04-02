@@ -1,46 +1,51 @@
-import requests,os
+import requests, os
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
-from marshmallow import Schema,fields
+from marshmallow import Schema, fields
 from passlib.hash import pbkdf2_sha256
 from sqlalchemy.exc import SQLAlchemyError
-from flask_jwt_extended import create_access_token,create_refresh_token,get_jwt_identity, jwt_required, get_jwt
+from flask_jwt_extended import (
+    create_access_token, create_refresh_token,
+    get_jwt_identity, jwt_required, get_jwt
+)
 from flask import jsonify
 from datetime import datetime
 
 from DB import db
-from models import UserModel
+# Import all three models (adjust the names according to your models)
+from models import User, Admin, AirControlDep
 from schemas import PlainUserSchema
 from blocklist import BLOCKLIST
 
+# Login schema now only requires email and password
 class LoginSchema(Schema):
     email = fields.Email(required=True)
     password = fields.Str(required=True)
-    user_type = fields.Str(required=False, missing="user")
-
 
 blp = Blueprint("Users", "users", description="Operations on users")
 
-def send_simple_message(to,subject,body):
-    domain=os.getenv("MAILGUN_DOMAIN")
-
+def send_simple_message(to, subject, body):
+    domain = os.getenv("MAILGUN_DOMAIN")
     return requests.post(
-  		f"https://api.mailgun.net/v3/{domain}/messages",
-  		auth=("api", os.getenv("MAILGUN_API_KEY")),
-  		data={"from": "Excited User <mailgun@sandboxfef3544c05b2459995a4f4cb4488d2a9.mailgun.org>",
-  			"to": [to],
-  			"subject": subject,
-  			"text": body})
+        f"https://api.mailgun.net/v3/{domain}/messages",
+        auth=("api", os.getenv("MAILGUN_API_KEY")),
+        data={
+            "from": "Excited User <mailgun@sandboxfef3544c05b2459995a4f4cb4488d2a9.mailgun.org>",
+            "to": [to],
+            "subject": subject,
+            "text": body
+        }
+    )
 
+# Registration and user-specific endpoints are only for regular users.
 @blp.route("/register")
 class UserRegister(MethodView):
     @blp.arguments(PlainUserSchema)
-    def post(self,user_data):
-        print(user_data)
-        if UserModel.query.filter(UserModel.email == user_data["email"]).first():
+    def post(self, user_data):
+        if User.query.filter(User.email == user_data["email"]).first():
             abort(409, message="A user with that email already exists.")
         try:
-            user = UserModel(
+            user = User(
                 email=user_data["email"],
                 password=pbkdf2_sha256.hash(user_data["password"]),
                 first_name=user_data.get("first_name"),
@@ -53,42 +58,70 @@ class UserRegister(MethodView):
         except SQLAlchemyError:
             db.session.rollback()
             abort(400, message="Something went wrong when registering the user")
-
         return {"message": "User registered successfully."}, 201
 
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
-    @blp.response(200,PlainUserSchema)
+    @blp.response(200, PlainUserSchema)
     def get(self, user_id):
-        user = UserModel.query.get(user_id)
-
+        user = User.query.get(user_id)
         return user
 
     def delete(self, user_id):
-        user = UserModel.query.get_or_404(user_id)
-
+        user = User.query.get_or_404(user_id)
         try:
             db.session.delete(user)
             db.session.commit()
         except SQLAlchemyError:
-            abort(400,message="Something went wrong when deleting the user")
+            abort(400, message="Something went wrong when deleting the user")
+        return {"message": "User deleted successfully."}, 200
 
-        return {"message": "User deleted successfully."} , 200
+def get_identity(user):
+    """
+    Helper function to return the primary key from whichever model is used.
+    Adjust attribute names if necessary.
+    """
+    if hasattr(user, "user_id"):
+        return user.user_id
+    elif hasattr(user, "admin_id"):
+        return user.admin_id
+    elif hasattr(user, "air_control_id"):
+        return user.air_control_id
+    return None
 
 @blp.route("/login")
 class UserLogin(MethodView):
     @blp.arguments(LoginSchema)
     def post(self, user_data):
-        user = UserModel.query.filter(UserModel.email == user_data["email"]).first()
+        email = user_data["email"]
+        password = user_data["password"]
 
-        print(user)
+        # Checking the admin table first.
+        user = Admin.query.filter(Admin.email == email).first()
+        role = "admin"
+        if not user:
+            # Then we check the air control department table.
+            user = AirControlDep.query.filter(
+                AirControlDep.email == email
+            ).first()
+            role = "air control staff"
+        if not user:
+            # Finally we check the regular users table.
+            user = User.query.filter(User.email == email).first()
+            role = "user"
 
-        if user and pbkdf2_sha256.verify(user_data["password"], user.password):
+        if user and pbkdf2_sha256.verify(password, user.password):
             user.last_login = datetime.now()
             db.session.commit()
-            access_token = create_access_token(identity=user.user_id, fresh=True)
-            refresh_token = create_refresh_token(user.user_id)
-            return {"access_token": access_token, "refresh_token": refresh_token}, 200
+            identity = get_identity(user)
+            additional_claims = {"role": role}
+            access_token = create_access_token(identity=identity, fresh=True, additional_claims=additional_claims)
+            # Only regular users receive a refresh token !!!
+            if role == "user":
+                refresh_token = create_refresh_token(identity=identity, additional_claims=additional_claims)
+                return {"access_token": access_token, "refresh_token": refresh_token}, 200
+            else:
+                return {"access_token": access_token}, 200
 
         abort(401, message="Invalid credentials.")
 
@@ -102,15 +135,12 @@ class UserLogout(MethodView):
 
 @blp.route("/refresh")
 class TokenRefresh(MethodView):
+    # Refresh endpoint applies only for regular users who have refresh tokens.
     @jwt_required(refresh=True)
     def post(self):
         current_user = get_jwt_identity()
-        new_token = create_access_token(identity=current_user, fresh=False)
+        additional_claims = {"role": "user"}
+        new_token = create_access_token(identity=current_user, fresh=False, additional_claims=additional_claims)
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
         return {"access_token": new_token}, 200
-
-
-
-
-
