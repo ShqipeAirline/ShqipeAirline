@@ -16,7 +16,7 @@ const AcdDashboard = () => {
       title: 'Add a new flight',
       description: 'Add a new flight for Passengers and delight them by our services.',
       icon: <img src={plane} alt="plane" />,
-      link: '/add-flight'
+      link: '/acd-dashboard/add-flight'
     },
     {
       id: 2,
@@ -28,7 +28,7 @@ const AcdDashboard = () => {
           <img src={plane} alt="plane" />
         </div>
       ),
-      link: '/update-flight'
+      link: '/acd-dashboard/update-flight'
     },
     {
       id: 3,

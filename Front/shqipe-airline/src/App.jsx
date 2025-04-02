@@ -7,6 +7,8 @@ import Dashboard from './pages/acd/AcdDashboard'
 import Schedule from './pages/acd/AcdSchedule'
 import FlightDetails from './pages/acd/FlightDetails'
 import AcdPassView from './pages/acd/AcdPassView';
+import AcdAddFlight from './pages/acd/AcdAddFlight'
+import AcdUpdateFlight from './pages/acd/AcdUpdateFlight'
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="schedule" element={<Schedule />} />
           <Route path="schedule/flight-details/:flightId" element={<FlightDetails />} />
+          <Route path="/acd-dashboard/add-flight" element={<AcdAddFlight />} />
+          <Route path="/acd-dashboard/update-flight" element={<AcdUpdateFlight />} />
         </Route>
          <Route path="/passenger-records" element={<AcdPassView />} />
       </Routes>
