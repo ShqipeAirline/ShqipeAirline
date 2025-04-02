@@ -1,0 +1,21 @@
+.add-button{
+    
+    margin-left: 20px;
+    padding: 8px;
+    color:#1E1E1E;
+    text-decoration: none;
+    background-color:#758DAF;
+    border: 1px solid #758DAF;
+    border-radius: 6px;
+}
+
+.flight-table{
+    margin-left:20px;
+    margin-top: 50px;
+    margin-right: 20px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    
+}
+
