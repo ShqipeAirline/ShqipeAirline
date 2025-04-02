@@ -40,7 +40,7 @@ const AcdDashboard = () => {
           <img src={plane} alt="plane" />
         </div>
       ),
-      link: '/remove-flight'
+      link: '/acd-dashboard/remove-flight'
     },
     {
       id: 4,

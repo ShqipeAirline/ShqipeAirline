@@ -9,6 +9,7 @@ import FlightDetails from './pages/acd/FlightDetails'
 import AcdPassView from './pages/acd/AcdPassView';
 import AcdAddFlight from './pages/acd/AcdAddFlight'
 import AcdUpdateFlight from './pages/acd/AcdUpdateFlight'
+import AcdRemoveFlight from './pages/acd/AcdRemoveFlight'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="schedule/flight-details/:flightId" element={<FlightDetails />} />
           <Route path="/acd-dashboard/add-flight" element={<AcdAddFlight />} />
           <Route path="/acd-dashboard/update-flight" element={<AcdUpdateFlight />} />
+          <Route path="/acd-dashboard/remove-flight" element={<AcdRemoveFlight />} />
         </Route>
          <Route path="/passenger-records" element={<AcdPassView />} />
       </Routes>

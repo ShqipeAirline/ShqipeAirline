@@ -12,6 +12,7 @@
 .update-button{
     background-color: #BDD098;
     border: 1px solid #BDD098;
+    color: #53524E;
     padding: 5px;
     border-radius: 6px;
 
@@ -27,3 +28,10 @@
     
 }
 
+.remove-button{
+    background-color: #E4C2C2;
+    border: 1px solid #E4C2C2;
+    color: #53524E;
+    padding: 5px;
+    border-radius: 6px;
+}
