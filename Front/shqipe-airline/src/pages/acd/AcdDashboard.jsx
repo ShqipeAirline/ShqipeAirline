@@ -5,7 +5,7 @@ import { AiFillEye } from 'react-icons/ai';
 import { BsCardChecklist } from 'react-icons/bs';
 import plane from '../../images/plane.png';
 import eye from '../../images/eye.png';
-import cross from '../../images/cross.png';
+
 import check from '../../images/checkmark.png';
 import './AcdDashboard.css';
 
@@ -55,20 +55,6 @@ const AcdDashboard = () => {
       description: 'Have a look at all flights available.',
       icon: <img src={eye} alt="eye" />,
       link: '/acd-dashboard/schedule'
-    },
-    {
-      id: 6,
-      title: 'View booked flight tickets',
-      description: 'View all the booked flight tickets.',
-      icon: <img src={check} alt="check" />,
-      link: '/booked-tickets'
-    },
-    {
-      id: 7,
-      title: 'Delete a passenger record',
-      description: 'Remove a record of a passenger from the history.',
-      icon: <img src={cross} alt="cross" />,
-      link: '/delete-passenger'
     },
     {
       id: 8,
