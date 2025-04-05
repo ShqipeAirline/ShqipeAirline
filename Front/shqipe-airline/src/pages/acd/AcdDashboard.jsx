@@ -43,13 +43,6 @@ const AcdDashboard = () => {
       link: '/acd-dashboard/remove-flight'
     },
     {
-      id: 4,
-      title: 'Update reservation status',
-      description: 'Make changes to reservation status for booked tickets.',
-      icon: <img src={check} alt="check" />,
-      link: '/update-reservation'
-    },
-    {
       id: 5,
       title: 'View all flights',
       description: 'Have a look at all flights available.',
