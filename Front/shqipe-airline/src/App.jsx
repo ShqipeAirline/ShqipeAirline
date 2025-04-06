@@ -10,14 +10,21 @@ import AcdPassView from './pages/acd/AcdPassView';
 import AcdAddFlight from './pages/acd/AcdAddFlight'
 import AcdUpdateFlight from './pages/acd/AcdUpdateFlight'
 import AcdRemoveFlight from './pages/acd/AcdRemoveFlight'
+import Header from './layouts/Header'
+import Home from './landingpages/Home'
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="register/" element={<Register />} />
         
+        {/*Landing pages*/}
+        <Route path="/" element={<Header/>} >
+          <Route index element={<Home/>} />
+          <Route path="about-us"  />
+        </Route>
         {/* Air Control Department Routes */}
         <Route path="/acd-dashboard" element={<AcdLayout />}>
           <Route index element={<Dashboard />} />
