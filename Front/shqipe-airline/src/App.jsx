@@ -12,6 +12,9 @@ import AcdUpdateFlight from './pages/acd/AcdUpdateFlight'
 import AcdRemoveFlight from './pages/acd/AcdRemoveFlight'
 import Header from './layouts/Header'
 import Home from './landingpages/Home'
+import Minishop from './landingpages/Minishop';
+import Shoppingcart from './landingpages/ShoppingCart';
+import PaymentForm from './landingpages/PaymentForm';
 
 function App() {
   return (
@@ -24,6 +27,9 @@ function App() {
         <Route path="/" element={<Header/>} >
           <Route index element={<Home/>} />
           <Route path="about-us"  />
+          <Route path="mini-shop" element={<Minishop />} />
+          <Route path="shopping-cart" element={<Shoppingcart />} />
+          <Route path="payment" element={<PaymentForm />} />
         </Route>
         {/* Air Control Department Routes */}
         <Route path="/acd-dashboard" element={<AcdLayout />}>
