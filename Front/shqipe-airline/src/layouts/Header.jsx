@@ -38,6 +38,12 @@ const Header = () => {
             <h1>Mini Shop</h1>
           </div>
         );
+         case '/shopping-cart':
+          return (
+            <div className="header-title">
+              <h1>Shopping Cart</h1>
+            </div>
+          );
       default:
         return null;
     }
@@ -57,7 +63,7 @@ const Header = () => {
             <Link to="/aircraft-details" className={`nav-link ${currentPath === '/aircraft-details' ? 'active' : ''}`}>Aircraft Detail</Link>
             <Link to="/mini-shop" className={`nav-link ${currentPath === '/mini-shop' ? 'active' : ''}`}>Minishop</Link>
             <Link to="/login" className="login-button">Log In</Link>
-            <FiShoppingCart className="cart-icon" />
+            <Link to="/shopping-cart" className={`cart-icon ${currentPath === '/shopping-cart' ? 'active' : ''}`}><FiShoppingCart /></Link>
           </div>
         </div>
 
