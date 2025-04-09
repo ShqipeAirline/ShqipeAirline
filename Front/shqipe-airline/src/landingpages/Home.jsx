@@ -7,6 +7,13 @@ import { MdOutlineAirplaneTicket } from "react-icons/md";
 import { CiDiscount1 } from "react-icons/ci";
 import { AiFillUnlock } from "react-icons/ai";
 import { BiSupport } from "react-icons/bi";
+import tradition from "../images/tradition-sky.png"
+import earth from "../images/Air-Delivery.png"
+import ticket from '../images/ticket.png'
+import feedback from "../images/feedback.png"
+import travels from '../images/travels.png'
+import places from '../images/places.png'
+import { VscActivateBreakpoints } from "react-icons/vsc";
 import './Home.css';
 const Home = () => {
     const [activeClass, setActiveClass] = useState('Economy');
@@ -91,6 +98,52 @@ const Home = () => {
                    <br />
                     </div>
                 </div>
+
+            </div>
+            <div className='basic-info'>
+                <img src={tradition} alt="tradition meets sky image" />
+                <div className='tradition-info'>
+                    <h3>Where Tradition Meets the Sky!</h3>
+                    <h1>One of the leading online flight booking platforms </h1>
+                    <div className='bulletpoint-txt'>
+                        <VscActivateBreakpoints /> <p>Dynamic pricing based on demand, availability, and promotions.</p> 
+                    </div>
+                    <div className='bulletpoint-txt'>
+                        <VscActivateBreakpoints /> <p>On-time performance & hassle-free travel experience.</p> <br />
+                    </div>
+                    <div className='bulletpoint-txt'>
+                        <VscActivateBreakpoints /> <p>Multiple route options to fit your schedule.</p> <br />
+                    </div>
+                    <div className='bulletpoint-txt'>
+                         <VscActivateBreakpoints /> <p>Fly to top cities and exotic getaways worldwide.</p> <br />
+                    </div>
+                    <Link to="/login" className="book-button">Book Now</Link>
+                </div>
+            </div>
+            <div className='popular-flights'>
+                <div className='popular-info'>
+                    <h1>Book Popular Flight Tickets</h1>
+                    <h4>“From the land of eagles to the world!”</h4>
+                    <img src={earth} alt="earth flight" />
+                </div>
+                <img src={ticket} alt="" className='ticketimg'/>
+            </div>
+            <div className='travels'>
+                <h1>Best travelers of this month</h1>
+                <img src={travels} alt="travelers" />
+            </div>
+            <div className='feedback'>
+                <h2>What’s our customer saying?</h2>
+                <h1>Our Customer Feedback</h1>
+                <img src={feedback} alt="feedback" />
+            </div>
+            <div className='memories'>
+                <h1>Make memories with us</h1>
+                <img src={places} alt="places images" />
+            </div>
+            <div className='application'>
+                <h1>Want To Become a Part <br /> Of Our Team?</h1>
+                <Link className='apply'>Apply here</Link>
 
             </div>
         </div>
