@@ -15,6 +15,7 @@ import Home from './landingpages/Home'
 import Minishop from './landingpages/Minishop';
 import Shoppingcart from './landingpages/ShoppingCart';
 import PaymentForm from './landingpages/PaymentForm';
+import About from './landingpages/About'
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
         {/*Landing pages*/}
         <Route path="/" element={<Header/>} >
           <Route index element={<Home/>} />
-          <Route path="about-us"  />
+          <Route path="about-us"  element={<About />}/>
           <Route path="mini-shop" element={<Minishop />} />
           <Route path="shopping-cart" element={<Shoppingcart />} />
           <Route path="payment" element={<PaymentForm />} />

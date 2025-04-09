@@ -24,6 +24,7 @@ const Header = () => {
         return (
           <div className="header-title">
             <h1>About Us</h1>
+            <h3>Your Journey, Our Passion!</h3>
           </div>
         );
       case '/aircraft-details':
