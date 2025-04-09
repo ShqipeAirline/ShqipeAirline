@@ -51,7 +51,7 @@ const Register = () => {
   };
 
   return (
-    <div className="login-back">
+    <div className="signup">
       <Box className="whiteBox-signup">
         <Box className="itemBox1">
           <img
@@ -130,7 +130,7 @@ const Register = () => {
         </Box>
 
         <Box className="itemBox">
-          <Link to="/" className="register-link">
+          <Link to="/login" className="register-link">
             Already have an account? LOG IN
           </Link>
         </Box>

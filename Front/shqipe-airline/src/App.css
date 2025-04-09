@@ -10,6 +10,20 @@
   padding: 0;
 }
 
+
+.signup{
+  
+  height: 112vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url("src/images/ls_background.png") no-repeat center center;
+  background-size: cover; 
+  margin: 0;
+  padding: 0;
+}
+
+
 .whiteBox{
   background-color: white;
 
