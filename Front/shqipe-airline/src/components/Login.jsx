@@ -1,30 +1,33 @@
-import '../App.css';
-import { Box } from '@mui/material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import Box from '@mui/material/Box';
 import TxtField from './forms/TxtField';
 import PassField from './forms/PassField';
 import Bttn from './forms/Bttn';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import useAuthStore from '../store/authStore';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { setUser, setTokens } = useAuthStore();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+
     const payload = {
       email,
       password,
     };
-
-    console.log(email)
-    console.log(password)
   
     try {
       const response = await fetch("http://127.0.0.1:5000/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // 🔥 Required!
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
@@ -32,17 +35,40 @@ const Login = () => {
       const data = await response.json();
   
       if (!response.ok) {
-        console.error("Login failed:", data); // show backend message
-        throw new Error(data.message || "Login failed");
+        setError(data.message || "Login failed");
+        return;
       }
-  
-      console.log("Login success:", data);
+
+      setTokens({
+        access_token: data.access_token,
+        refresh_token: data.refresh_token
+      });
+
+      const userData = {
+        email,
+        role: data.role,
+        lastLogin: new Date().toISOString(),
+      };
+      setUser(userData);
+
+      switch(data.role) {
+        case 'air control staff':
+          navigate('/acd-dashboard');
+          break;
+        case 'admin':
+          navigate('/admin-dashboard');
+          break;
+        case 'user':
+          navigate('/user-dashboard');
+          break;
+        default:
+          navigate('/dashboard');
+      }
+      
     } catch (err) {
-      console.error(err.message);
+      setError(err.message || 'An error occurred during login');
     }
   };
-  
-  
 
   return (
     <div className="login-back">

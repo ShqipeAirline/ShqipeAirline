@@ -1,1 +1,13 @@
 .qodo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+
+# IDE
+.idea/
+
+# Environment variables
+.env
