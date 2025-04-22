@@ -1,0 +1,105 @@
+.footer {
+    background-color: #070A1C;
+    color: white;
+    padding: 2.5rem 1.5rem;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2.5rem;
+}
+
+.footer-logo-img {
+    width: 150px; /* Adjust width as needed */
+    height: auto; /* This maintains the aspect ratio */
+}
+
+.footer-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.red-text {
+    color: #ef4444;
+}
+
+.white-text {
+    color: #fff;
+}
+
+.footer-subtitle {
+    display: block;
+    font-size: 0.875rem;
+    color: #d1d5db;
+    margin-top: 0.25rem;
+}
+
+.footer-tagline {
+    margin-top: 1rem;
+    color: #9ca3af;
+    font-size: 0.875rem;
+}
+
+.footer-icons a {
+    color: white;
+    margin-right: 1rem;
+    transition: color 0.3s ease;
+}
+
+.footer-icons a:hover {
+    color: #ef4444;
+}
+
+.footer-heading {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.footer-text {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+/* Add some margin to push the About and Support sections */
+.footer-container > div:nth-child(2),
+.footer-container > div:nth-child(3) {
+    margin-left: 1rem;  /* Pushes these sections a bit to the right */
+}
+
+/* Optional: Add more space on hover for the links in the footer */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #fff;
+}
+
+.icon-img {
+    width: 36px;
+    height: 36px;
+    margin-right: 12px;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+  }
+  
+  .icon-img:hover {
+    transform: scale(1.1);
+  }
+  
