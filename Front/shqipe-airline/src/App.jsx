@@ -16,8 +16,7 @@ import Minishop from './landingpages/Minishop';
 import Shoppingcart from './landingpages/ShoppingCart';
 import PaymentForm from './landingpages/PaymentForm';
 import About from './landingpages/About'
-import AdminLayout from './layouts/AdminLayout'
-import AdminDashboard from './admin/AdminDashboard'
+
 import JobApplication from './landingpages/JobApplication'; 
 import JobApplicationForm from './landingpages/JobApplicationForm';
 import AdminLayout from './layouts/AdminLayout'
