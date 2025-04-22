@@ -23,6 +23,7 @@ import AdminLayout from './layouts/AdminLayout'
 import AdminDashboard from './admin/AdminDashboard'
 import AdminTransactions from './admin/AdminTransactions'
 import AirCraftDetails from './landingpages/AirCraftDetails';
+import UserManage from './admin/Usermanage'
 function App() {
   return (
     <>
@@ -47,6 +48,7 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminLayout/>} >
           <Route index element={<AdminDashboard/>} />
           <Route path="admin-transaction" element={<AdminTransactions/>}/>
+          <Route path="admin-user-management" element={<UserManage/>}/>
 
         </Route>
         
