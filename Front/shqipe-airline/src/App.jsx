@@ -16,8 +16,12 @@ import Minishop from './landingpages/Minishop';
 import Shoppingcart from './landingpages/ShoppingCart';
 import PaymentForm from './landingpages/PaymentForm';
 import About from './landingpages/About'
+import AdminLayout from './layouts/AdminLayout'
+import AdminDashboard from './admin/AdminDashboard'
 import JobApplication from './landingpages/JobApplication'; 
 import JobApplicationForm from './landingpages/JobApplicationForm';
+import AdminLayout from './layouts/AdminLayout'
+import AdminDashboard from './admin/AdminDashboard'
 
 function App() {
   return (
@@ -36,6 +40,20 @@ function App() {
           <Route path="job-application" element={<JobApplication />} />
           <Route path="job-application-form" element={<JobApplicationForm />} />
         </Route>
+        
+        {/*Admin pages*/ }
+        <Route path="/admin-dashboard" element={<AdminLayout/>} >
+          <Route index element={<AdminDashboard/>} />
+
+        </Route>
+        
+        {/*Admin pages*/ }
+        <Route path="/admin-dashboard" element={<AdminLayout/>} >
+          <Route index element={<AdminDashboard/>} />
+
+        </Route>
+        
+        
         {/* Air Control Department Routes */}
         <Route path="/acd-dashboard" element={<AcdLayout />}>
           <Route index element={<Dashboard />} />
@@ -46,6 +64,8 @@ function App() {
           <Route path="/acd-dashboard/remove-flight" element={<AcdRemoveFlight />} />
         </Route>
          <Route path="/passenger-records" element={<AcdPassView />} />
+
+
       </Routes>
     </>
   )
