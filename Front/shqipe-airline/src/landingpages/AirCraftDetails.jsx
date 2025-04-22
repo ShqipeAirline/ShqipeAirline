@@ -1,5 +1,5 @@
 import React from 'react'
-import './AircraftDetails.css'
+import './AirCraftDetails.css';
 import aircraft1 from '../images/aircraft1.png'
 import aircraft2 from '../images/aircraft2.png'
 import aircraft3 from '../images/aircraft3.png'

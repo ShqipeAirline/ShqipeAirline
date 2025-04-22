@@ -21,7 +21,7 @@ import JobApplication from './landingpages/JobApplication';
 import JobApplicationForm from './landingpages/JobApplicationForm';
 import AdminLayout from './layouts/AdminLayout'
 import AdminDashboard from './admin/AdminDashboard'
-
+import AdminTransactions from './admin/AdminTransactions'
 import AirCraftDetails from './landingpages/AirCraftDetails';
 function App() {
   return (
@@ -46,6 +46,7 @@ function App() {
         {/*Admin pages*/ }
         <Route path="/admin-dashboard" element={<AdminLayout/>} >
           <Route index element={<AdminDashboard/>} />
+          <Route path="admin-transaction" element={<AdminTransactions/>}/>
 
         </Route>
         

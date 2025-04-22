@@ -18,20 +18,20 @@ const AdminLayout = () => {
             Dashboard
           </Link>
           <Link 
-            to="/trasaction" 
-            className={`sidebar-item ${currentPath === '/transaction' ? 'active' : ''}`}
+            to="/admin-dashboard/admin-transaction" 
+            className={`sidebar-item ${currentPath === '/admin-dashboard/admin-transaction' ? 'active' : ''}`}
           >
             Transactions
           </Link>
           <Link 
-            to="/user-management" 
-            className={`sidebar-item ${currentPath === '/user-management' ? 'active' : ''}`}
+            to="/admin-dashboard/admin-user-management" 
+            className={`sidebar-item ${currentPath === '/admin-dashboard/admin-user-management' ? 'active' : ''}`}
           >
            User Account Management
           </Link>
           <Link 
-            to="/reports" 
-            className={`sidebar-item ${currentPath === '/reports' ? 'active' : ''}`}
+            to="/admin-dashboard/admin-reports" 
+            className={`sidebar-item ${currentPath === '/admin-dashboard/admin-reports' ? 'active' : ''}`}
           >
             Reports
           </Link>
