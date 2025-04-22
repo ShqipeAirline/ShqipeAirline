@@ -1,0 +1,76 @@
+.hiring-section {
+    text-align: center;
+    margin-top: 60px;
+    background-color: #f9f9f9;
+    padding: 50px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .hiring-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+  }
+  
+  .job-cards {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .job-card {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .job-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .job-title {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #444;
+    margin-bottom: 12px;
+  }
+  
+  .job-type {
+    margin-top: 8px;
+    color: #777;
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+  }
+  
+  .apply-button {
+    margin-top: 20px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 30px;
+    padding: 14px 35px;
+    font-size: 1.1rem;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .apply-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-4px);
+  }
+  
+  .job-image {
+    width: 80%;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
