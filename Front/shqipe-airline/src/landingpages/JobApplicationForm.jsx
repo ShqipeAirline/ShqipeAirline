@@ -26,8 +26,18 @@ const JobApplicationForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  
+    const { firstName, lastName, contactNumber, email, cv } = formData;
+  
+  
+    if (!firstName || !lastName || !contactNumber || !email || !cv) {
+      alert('Please fill in all required fields and upload your CV.');
+      return;
+    }
+  
     console.log('Form submitted:', formData);
     alert('Your application has been submitted successfully!');
+  
     setFormData(initialFormData);
     if (fileInputRef.current) {
       fileInputRef.current.value = null;
@@ -90,3 +100,4 @@ const JobApplicationForm = () => {
 };
 
 export default JobApplicationForm;
+
