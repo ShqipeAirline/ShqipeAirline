@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+}
+
+.header-container {
+    background: #030d29 url('/images/map-bg.svg') no-repeat center;
+    background-size: cover;
+    color: white;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+.logo span {
+    font-weight: 400;
+    color: #ccc;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.nav-links .active {
+    border-bottom: 2px solid white;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.login-btn {
+    background: white;
+    color: black;
+    padding: 0.4rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cart-icon {
+    font-size: 1.4rem;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem;
+}
+
+.aircraft-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.aircraft-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    transition: transform 0.2s ease-in-out;
+}
+
+.aircraft-card:hover {
+    transform: translateY(-5px);
+}
+
+.aircraft-card img {
+    width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+    height: 180px;
+}
+
+.aircraft-card h2 {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+}
+
+.aircraft-specs {
+    list-style: none;
+    padding: 0.5rem 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.aircraft-specs li {
+    margin-bottom: 0.5rem;
+}
+
+.footer {
+    background: #030d29;
+    color: white;
+    padding: 3rem 2rem;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.footer-brand img {
+    width: 120px;
+    margin-bottom: 1rem;
+}
+
+.footer-col h4 {
+    margin-bottom: 0.8rem;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 0.5rem;
+}
+
+.social-icons a {
+    margin-right: 1rem;
+    font-size: 1.2rem;
+    color: white;
+}
