@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import TxtField from './forms/TxtField';
 import PassField from './forms/PassField';
 import Bttn from './forms/Bttn';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 const Register = () => {
@@ -16,6 +16,7 @@ const Register = () => {
   const [emergencyContactPhone, setEmergencyContactPhone] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   // Function to handle form submission
   const handleSubmit = async () => {
@@ -44,7 +45,18 @@ const Register = () => {
       }
 
       setSuccess('Registration successful! Please log in.');
-      // Optionally, clear the fields or redirect the user
+      // Clear form after successful registration
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+      setPassword('');
+      setPhoneNumber('');
+      setEmergencyContactPhone('');
+      
+      // Redirect to login page after 2 seconds
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
     } catch (err) {
       setError(err.message);
     }

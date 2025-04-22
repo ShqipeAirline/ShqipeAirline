@@ -3,13 +3,14 @@ import { Box } from '@mui/material';
 import TxtField from './forms/TxtField';
 import PassField from './forms/PassField';
 import Bttn from './forms/Bttn';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     const payload = {
@@ -17,32 +18,33 @@ const Login = () => {
       password,
     };
 
-    console.log(email)
-    console.log(password)
-  
     try {
       const response = await fetch("http://127.0.0.1:5000/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // 🔥 Required!
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
-        console.error("Login failed:", data); // show backend message
-        throw new Error(data.message || "Login failed");
+        setError(data.message || "Login failed");
+        return;
       }
-  
-      console.log("Login success:", data);
+
+      localStorage.setItem('access_token', data.access_token);
+      if (data.refresh_token) {
+        localStorage.setItem('refresh_token', data.refresh_token);
+      }
+
+      navigate('/');
     } catch (err) {
-      console.error(err.message);
+      setError("An error occurred during login");
+      console.error(err);
     }
   };
-  
-  
 
   return (
     <div className="login-back">

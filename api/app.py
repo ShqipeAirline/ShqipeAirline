@@ -1,9 +1,9 @@
 import os
-from DB import db
+from api.DB import db
 from flask import Flask, jsonify
 from flask_smorest import Api
 
-from resources.users import blp as usersBlueprint
+from api.resources.users import blp as usersBlueprint
 from resources.flights import blp as flightsBlueprint
 from flask_jwt_extended import JWTManager
 from blocklist import BLOCKLIST

@@ -11,11 +11,11 @@ from flask_jwt_extended import (
 from flask import jsonify
 from datetime import datetime
 
-from DB import db
+from api.DB import db
 # Import all three models (adjust the names according to your models)
-from models import User, Admin, AirControlDep
-from schemas import PlainUserSchema
-from blocklist import BLOCKLIST
+from ..models import User, Admin, AirControlDep
+from ..schemas import PlainUserSchema
+from ..blocklist import BLOCKLIST
 
 # Login schema now only requires email and password
 class LoginSchema(Schema):
