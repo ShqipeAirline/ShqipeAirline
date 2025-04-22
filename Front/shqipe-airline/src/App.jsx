@@ -16,6 +16,8 @@ import Minishop from './landingpages/Minishop';
 import Shoppingcart from './landingpages/ShoppingCart';
 import PaymentForm from './landingpages/PaymentForm';
 import About from './landingpages/About'
+import JobApplication from './landingpages/JobApplication'; 
+import JobApplicationForm from './landingpages/JobApplicationForm';
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
           <Route path="mini-shop" element={<Minishop />} />
           <Route path="shopping-cart" element={<Shoppingcart />} />
           <Route path="payment" element={<PaymentForm />} />
+          <Route path="job-application" element={<JobApplication />} />
+          <Route path="job-application-form" element={<JobApplicationForm />} />
         </Route>
         {/* Air Control Department Routes */}
         <Route path="/acd-dashboard" element={<AcdLayout />}>
