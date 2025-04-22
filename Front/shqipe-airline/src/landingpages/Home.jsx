@@ -156,7 +156,7 @@ const Home = () => {
             {/* Application CTA */}
             <div className='application'>
                 <h1>Want To Become a Part <br /> Of Our Team?</h1>
-                <Link className='apply'>Apply here</Link>
+                <Link className='apply' to={'/job-application'}>Apply here</Link>
             </div>
         </div>
     );

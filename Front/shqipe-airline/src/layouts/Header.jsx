@@ -45,6 +45,18 @@ const Header = () => {
               <h1>Shopping Cart</h1>
             </div>
           );
+          case '/job-application':
+            return (
+              <div className="header-title">
+                <h1>Job Application</h1>
+              </div>
+            );
+            case '/job-application-form':
+              return (
+                <div className="header-title">
+                  <h1>Job Application Form</h1>
+                </div>
+              );
       default:
         return null;
     }
