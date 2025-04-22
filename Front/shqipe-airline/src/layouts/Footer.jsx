@@ -42,7 +42,7 @@ function Footer() {
           <ul className="footer-links">
             <li><a href="">Home</a></li>
             <li><a href="about-us">About Us</a></li>
-            <li><a href="#">Aircraft Details</a></li>
+            <li><a href="aircraft-details">Aircraft Details</a></li>
             <li><a href="mini-shop">Minishop</a></li>
           </ul>
         </div>
@@ -58,3 +58,4 @@ function Footer() {
 }
 
 export default Footer;
+
