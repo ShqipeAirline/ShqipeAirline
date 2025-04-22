@@ -16,7 +16,7 @@ import Minishop from './landingpages/Minishop';
 import Shoppingcart from './landingpages/ShoppingCart';
 import PaymentForm from './landingpages/PaymentForm';
 import About from './landingpages/About'
-
+import Footer from './layouts/Footer'
 import JobApplication from './landingpages/JobApplication'; 
 import JobApplicationForm from './landingpages/JobApplicationForm';
 import AdminLayout from './layouts/AdminLayout'
@@ -30,7 +30,7 @@ function App() {
         <Route path="register/" element={<Register />} />
         
         {/*Landing pages*/}
-        <Route path="/" element={<Header/>} >
+        <Route path="/" element={<><Header /><Footer /></>}>
           <Route index element={<Home/>} />
           <Route path="about-us"  element={<About />}/>
           <Route path="mini-shop" element={<Minishop />} />
