@@ -26,6 +26,7 @@ import AirCraftDetails from './landingpages/AirCraftDetails';
 import UserManage from './admin/Usermanage'
 import PassagerLayout from './layouts/PassagerLayout'
 import Profile from './passanger/Profile'
+import SearchFlight from './passanger/SearchFlight'
 function App() {
   return (
     <>
@@ -58,10 +59,11 @@ function App() {
        <Route path="/passenger-dashboard" element={<PassagerLayout/>} >
           {/*<Route index element={} />
           
-          <Route path="search" element={}/>
+        
           <Route path="book" element={}/>
           <Route path="feedback" element={}/>
 */}        <Route path="profile" element={<Profile/>}/>
+  <Route path="search" element={<SearchFlight/>}/>
         </Route>
         
         
