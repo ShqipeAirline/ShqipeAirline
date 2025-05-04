@@ -12,32 +12,32 @@ const PassagerLayout = () => {
       <div className="sidebar">
         <div className="sidebar-content">
           <Link 
-            to="/passager-dashboard" 
-            className={`sidebar-item ${currentPath === '/passager-dashboard' ? 'active' : ''}`}
+            to="/passenger-dashboard" 
+            className={`sidebar-item ${currentPath === '/passenger-dashboard' ? 'active' : ''}`}
           >
             Dashboard
           </Link>
           <Link 
-            to="/passager-dashboard/profile" 
-            className={`sidebar-item ${currentPath === '/passager-dashboard/profile' ? 'active' : ''}`}
+            to="/passenger-dashboard/profile" 
+            className={`sidebar-item ${currentPath === '/passenger-dashboard/profile' ? 'active' : ''}`}
           >
             Profile Management
           </Link>
           <Link 
-            to="/passager-dashboard/search" 
-            className={`sidebar-item ${currentPath === '/passager-dashboard/search' ? 'active' : ''}`}
+            to="/passenger-dashboard/search" 
+            className={`sidebar-item ${currentPath === '/passenger-dashboard/search' ? 'active' : ''}`}
           >
            Search Flights
           </Link>
           <Link 
-            to="/passager-dashboard/book" 
-            className={`sidebar-item ${currentPath === '//passager-dashboard/book' ? 'active' : ''}`}
+            to="/passenger-dashboard/book" 
+            className={`sidebar-item ${currentPath === '/passenger-dashboard/book' ? 'active' : ''}`}
           >
             Book Tickets
           </Link>
           <Link 
-            to="/passager-dashboard/feedback" 
-            className={`sidebar-item ${currentPath === '//passager-dashboard/feedback' ? 'active' : ''}`}
+            to="/passenger-dashboard/feedback" 
+            className={`sidebar-item ${currentPath === '/passenger-dashboard/feedback' ? 'active' : ''}`}
           >
             Feedback
           </Link>
