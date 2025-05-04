@@ -24,6 +24,7 @@ import AdminDashboard from './admin/AdminDashboard'
 import AdminTransactions from './admin/AdminTransactions'
 import AirCraftDetails from './landingpages/AirCraftDetails';
 import UserManage from './admin/Usermanage'
+import PassengerDashboard from './pages/passenger/PassengerDashboard';
 import PassagerLayout from './layouts/PassagerLayout'
 import Profile from './passanger/Profile'
 function App() {
@@ -61,7 +62,8 @@ function App() {
           <Route path="search" element={}/>
           <Route path="book" element={}/>
           <Route path="feedback" element={}/>
-*/}        <Route path="profile" element={<Profile/>}/>
+*/}       <Route path="profile" element={<Profile/>}/>
+          <Route index element={<PassengerDashboard/>}/>
         </Route>
         
         
@@ -75,7 +77,6 @@ function App() {
           <Route path="/acd-dashboard/remove-flight" element={<AcdRemoveFlight />} />
         </Route>
          <Route path="/passenger-records" element={<AcdPassView />} />
-
 
       </Routes>
     </>
