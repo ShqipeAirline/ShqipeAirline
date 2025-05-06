@@ -58,14 +58,14 @@ function App() {
         
        {/*Passager pages*/ }
        <Route path="/passenger-dashboard" element={<PassagerLayout/>} >
-          {/*<Route index element={} />
-          
+           <Route index element={<PassengerDashboard/>}/>
+ <Route path="profile" element={<Profile/>}/>
+ <Route path="search" element={<SearchFlight/>}/>
+  {/*       
         
           <Route path="book" element={}/>
           <Route path="feedback" element={}/>
-*/}         <Route index element={<PassengerDashboard/>}/>
- <Route path="profile" element={<Profile/>}/>
- <Route path="search" element={<SearchFlight/>}/>
+*/}       
         </Route>
         
         
