@@ -28,6 +28,8 @@ import PassengerDashboard from './pages/passenger/PassengerDashboard';
 import PassagerLayout from './layouts/PassagerLayout'
 import Profile from './passanger/Profile'
 import SearchFlight from './passanger/SearchFlight'
+import BookFlight from './passanger/BookFlight'
+
 function App() {
   return (
     <>
@@ -44,8 +46,7 @@ function App() {
           <Route path="payment" element={<PaymentForm />} />
           <Route path="job-application" element={<JobApplication />} />
           <Route path="job-application-form" element={<JobApplicationForm />} />
-                    <Route path="/aircraft-details" element={<AirCraftDetails />} />
-
+          <Route path="/aircraft-details" element={<AirCraftDetails />} />
         </Route>
         
         {/*Admin pages*/ }
@@ -53,21 +54,15 @@ function App() {
           <Route index element={<AdminDashboard/>} />
           <Route path="admin-transaction" element={<AdminTransactions/>}/>
           <Route path="admin-user-management" element={<UserManage/>}/>
-
         </Route>
         
        {/*Passager pages*/ }
        <Route path="/passenger-dashboard" element={<PassagerLayout/>} >
-          {/*<Route index element={} />
-          
-        
-          <Route path="book" element={}/>
-          <Route path="feedback" element={}/>
-*/}         <Route index element={<PassengerDashboard/>}/>
- <Route path="profile" element={<Profile/>}/>
- <Route path="search" element={<SearchFlight/>}/>
+          <Route index element={<PassengerDashboard/>}/>
+          <Route path="profile" element={<Profile/>}/>
+          <Route path="search" element={<SearchFlight/>}/>
+          <Route path="book-flight" element={<BookFlight/>}/>
         </Route>
-        
         
         {/* Air Control Department Routes */}
         <Route path="/acd-dashboard" element={<AcdLayout />}>
@@ -79,7 +74,6 @@ function App() {
           <Route path="/acd-dashboard/remove-flight" element={<AcdRemoveFlight />} />
         </Route>
          <Route path="/passenger-records" element={<AcdPassView />} />
-
       </Routes>
     </>
   )
