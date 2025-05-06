@@ -71,7 +71,7 @@ const SearchFlight = () => {
               </div>
             </div>
             <img src={devider} alt="divider" className="divider" />
-            <Link  className="book-button">
+            <Link to="/passenger-dashboard/book-flight" state={{ flight }} className="book-button">
               Book 
             </Link>
           </div>

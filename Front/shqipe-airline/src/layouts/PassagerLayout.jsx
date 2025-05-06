@@ -30,12 +30,6 @@ const PassagerLayout = () => {
            Search Flights
           </Link>
           <Link 
-            to="/passenger-dashboard/book" 
-            className={`sidebar-item ${currentPath === '/passenger-dashboard/book' ? 'active' : ''}`}
-          >
-            Book Tickets
-          </Link>
-          <Link 
             to="/passenger-dashboard/feedback" 
             className={`sidebar-item ${currentPath === '/passenger-dashboard/feedback' ? 'active' : ''}`}
           >
