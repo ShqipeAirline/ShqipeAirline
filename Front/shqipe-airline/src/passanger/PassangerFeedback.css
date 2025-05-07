@@ -1,0 +1,55 @@
+.feedback-container {
+    background-color: #f3f2f1;
+    padding: 40px;
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .feedback-container h2 {
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  
+  .feedback-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .feedback-form label {
+    margin-top: 20px;
+    margin-bottom: 6px;
+    color: #555;
+  }
+  
+  .feedback-form input,
+  .feedback-form textarea {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    outline: none;
+    resize: vertical;
+  }
+  
+  .feedback-form textarea {
+    min-height: 150px;
+  }
+  
+  .feedback-form button {
+    margin-top: 30px;
+    padding: 14px;
+    background-color: #2e45f4;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .feedback-form button:hover {
+    background-color: #1f34c9;
+  }
+  
