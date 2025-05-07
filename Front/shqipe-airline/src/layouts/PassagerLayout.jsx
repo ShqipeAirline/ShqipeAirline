@@ -55,7 +55,7 @@ const PassagerLayout = () => {
               <span></span>
               <div className="user-info">
                 <span className="user-name">Name Surname</span>
-                <span className="user-role">Admin</span>
+                <span className="user-role">Passenger</span>
               </div>
               <button className="profile-dropdown"><IoIosArrowDown /></button>
             </div>
