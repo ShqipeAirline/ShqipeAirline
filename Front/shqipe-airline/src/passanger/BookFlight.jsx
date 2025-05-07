@@ -25,7 +25,13 @@ const BookFlight = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/booking-confirmation');
+    console.log('Form submitted');
+    if (!flight || !formData) {
+      console.log('Missing flight or formData');
+      return;
+    }
+    navigate('/passenger-dashboard/booking-confirmation', { state: { flight, formData } });
+
   };
 
   if (!flight) {
