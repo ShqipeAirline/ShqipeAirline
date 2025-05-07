@@ -29,6 +29,9 @@ import PassagerLayout from './layouts/PassagerLayout'
 import Profile from './passanger/Profile'
 import SearchFlight from './passanger/SearchFlight'
 import BookFlight from './passanger/BookFlight'
+import PassangerFeedback from './passanger/PassangerFeedback'
+import BookingConfirmation from './passanger/BookingConfirmation';
+import PassangerPayment from './passanger/PassangerPayment';
 
 function App() {
   return (
@@ -67,6 +70,9 @@ function App() {
  <Route path="profile" element={<Profile/>}/>
  <Route path="search" element={<SearchFlight/>}/>
  <Route path="book-flight" element={<BookFlight/>}/>
+ <Route path="feedback" element={<PassangerFeedback />} />
+ <Route path="booking-confirmation" element={<BookingConfirmation />} />
+ <Route path="passanger-payment" element={<PassangerPayment />} />
 
         </Route>
         
