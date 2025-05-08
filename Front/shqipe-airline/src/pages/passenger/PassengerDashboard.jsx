@@ -145,8 +145,9 @@ const PassengerDashboard = () => {
         </table>
       </section>
       <footer className={styles.dashboardFooter}>
-        <button className={styles.footerBtn}>Find your ideal rental vehicle!</button>
-        <button className={styles.footerBtn}>Discover the perfect hotel for you!</button>
+       <a href="https://www.rentalcars.com/" target='_blank'> <button className={styles.footerBtn}>Find your ideal rental vehicle!</button></a>
+        
+        <a href="https://www.booking.com/index.en-gb.html?label=hotel_details-toHLT7%401746313574&sid=e696e4b3b26c9fb223e8f1522697a536&aid=898224" target='_blank'><button className={styles.footerBtn} >Discover the perfect hotel for you!</button></a>
       </footer>
     </>
   );
