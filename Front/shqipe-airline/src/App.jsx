@@ -32,6 +32,7 @@ import BookFlight from './passanger/BookFlight'
 import PassangerFeedback from './passanger/PassangerFeedback'
 import BookingConfirmation from './passanger/BookingConfirmation';
 import PassangerPayment from './passanger/PassangerPayment';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -53,42 +54,48 @@ function App() {
         </Route>
         
         {/*Admin pages*/ }
-        <Route path="/admin-dashboard" element={<AdminLayout/>} >
+        <Route path="/admin-dashboard" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminLayout/>
+          </ProtectedRoute>
+        }>
           <Route index element={<AdminDashboard/>} />
           <Route path="admin-transaction" element={<AdminTransactions/>}/>
           <Route path="admin-user-management" element={<UserManage/>}/>
         </Route>
         
-       {/*Passager pages*/ }
-       <Route path="/passenger-dashboard" element={<PassagerLayout/>} >
-          {/*<Route index element={} />
-          
-        
-          <Route path="book" element={}/>
-          <Route path="feedback" element={}/>
-*/}         <Route index element={<PassengerDashboard/>}/>
- <Route path="profile" element={<Profile/>}/>
- <Route path="search" element={<SearchFlight/>}/>
- <Route path="book-flight" element={<BookFlight/>}/>
- <Route path="feedback" element={<PassangerFeedback />} />
- <Route path="booking-confirmation" element={<BookingConfirmation />} />
- <Route path="passanger-payment" element={<PassangerPayment />} />
+        {/*Passenger pages*/ }
+        <Route path="/passenger-dashboard" element={
+          <ProtectedRoute allowedRoles={['user']}>
+            <PassagerLayout/>
+          </ProtectedRoute>
+        }>
+          <Route index element={<PassengerDashboard/>}/>
+          <Route path="profile" element={<Profile/>}/>
+          <Route path="search" element={<SearchFlight/>}/>
+          <Route path="book-flight" element={<BookFlight/>}/>
+          <Route path="feedback" element={<PassangerFeedback />} />
+          <Route path="booking-confirmation" element={<BookingConfirmation />} />
+          <Route path="passanger-payment" element={<PassangerPayment />} />
+        </Route>
 
+        {/*Air Control Department pages*/}
+        <Route path="/acd-dashboard" element={
+          <ProtectedRoute allowedRoles={['air control staff']}>
+            <AcdLayout/>
+          </ProtectedRoute>
+        }>
+          <Route index element={<Dashboard/>} />
+          <Route path="schedule" element={<Schedule/>} />
+          <Route path="flight-details" element={<FlightDetails/>} />
+          <Route path="passenger-view" element={<AcdPassView/>} />
+          <Route path="add-flight" element={<AcdAddFlight/>} />
+          <Route path="update-flight" element={<AcdUpdateFlight/>} />
+          <Route path="remove-flight" element={<AcdRemoveFlight/>} />
         </Route>
-        
-        {/* Air Control Department Routes */}
-        <Route path="/acd-dashboard" element={<AcdLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="schedule" element={<Schedule />} />
-          <Route path="schedule/flight-details/:flightId" element={<FlightDetails />} />
-          <Route path="/acd-dashboard/add-flight" element={<AcdAddFlight />} />
-          <Route path="/acd-dashboard/update-flight" element={<AcdUpdateFlight />} />
-          <Route path="/acd-dashboard/remove-flight" element={<AcdRemoveFlight />} />
-        </Route>
-         <Route path="/passenger-records" element={<AcdPassView />} />
       </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
