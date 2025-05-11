@@ -20,9 +20,17 @@ class AirControlDep(db.Model):
     department = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
     last_login = db.Column(db.DateTime)
+    deleted_at = db.Column(
+            db.DateTime,
+            nullable = True,
+            default = None)
 
     # Relationships
     activity_logs = db.relationship('AirControlActivityLog', backref='staff', lazy=True)
     # Many-to-many relationship with Flight using the 'manages' association table
     flights = db.relationship('Flight', secondary=manages, backref=db.backref('air_control_staff', lazy='dynamic'))
+    admin_id = db.Column(
+                db.Integer,
+                db.ForeignKey('Admin.admin_id'),
+                nullable = False)
 

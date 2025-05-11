@@ -16,3 +16,4 @@ class PaymentMethod(db.Model):
 
     # Relationships
     transactions = db.relationship('Transaction', backref='payment_method', lazy=True)
+    user = db.relationship('User', back_populates='payment_methods', lazy=True)

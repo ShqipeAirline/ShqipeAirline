@@ -40,7 +40,6 @@ class FlightList(MethodView):
     @jwt_required()
     @blp.response(200, PlainFlightSchema(many=True))
     def get(self):
-        role_required()
         flights = Flight.query.all()
         return flights
 
@@ -66,7 +65,6 @@ class FlightDetail(MethodView):
     @jwt_required()
     @blp.response(200, PlainFlightSchema)
     def get(self, flight_id):
-        role_required()
         flight = Flight.query.get_or_404(flight_id)
         return flight
 

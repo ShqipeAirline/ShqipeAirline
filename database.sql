@@ -237,3 +237,7 @@ VALUES
   (1, 1),
   (2, 2);
 
+select * from flights;
+select * from user;
+select * from bookings;
+select * from payment_methods;

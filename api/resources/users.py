@@ -37,6 +37,11 @@ def send_simple_message(to, subject, body):
         }
     )
 
+def admin_required():
+    claims = get_jwt()
+    if claims.get("role") != "admin":
+        abort(403, message="Admin privileges required.")
+
 # Registration and user-specific endpoints are only for regular users.
 @blp.route("/register")
 class UserRegister(MethodView):
@@ -51,7 +56,6 @@ class UserRegister(MethodView):
                 first_name=user_data.get("first_name"),
                 last_name=user_data.get("last_name"),
                 phone_number=user_data.get("phone_number"),
-                emergency_contact_phone=user_data.get("emergency_contact_phone")
             )
             db.session.add(user)
             db.session.commit()
@@ -61,13 +65,17 @@ class UserRegister(MethodView):
         return {"message": "User registered successfully."}, 201
 
 @blp.route("/user/<int:user_id>")
-class User(MethodView):
+class UserResource(MethodView):
+    @jwt_required()
     @blp.response(200, PlainUserSchema)
     def get(self, user_id):
+        admin_required()
         user = User.query.get(user_id)
         return user
 
+    @jwt_required()
     def delete(self, user_id):
+        admin_required()
         user = User.query.get_or_404(user_id)
         try:
             db.session.delete(user)
@@ -125,6 +133,7 @@ class UserLogin(MethodView):
 
         abort(401, message="Invalid credentials.")
 
+#TODO revoke the refresh token too maybe???
 @blp.route("/logout")
 class UserLogout(MethodView):
     @jwt_required()

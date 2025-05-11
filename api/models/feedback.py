@@ -8,3 +8,4 @@ class Feedback(db.Model):
     comments = db.Column(db.Text)
     feedback_date = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
     user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'), nullable=False)
+    user = db.relationship('User', back_populates='feedbacks', lazy=True)

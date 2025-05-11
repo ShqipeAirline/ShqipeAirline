@@ -11,3 +11,4 @@ class Booking(db.Model):
     booking_date = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
     total_price = db.Column(db.Numeric(10, 2), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'), nullable=False)
+    user = db.relationship('User', back_populates='bookings', lazy=True)

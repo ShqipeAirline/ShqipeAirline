@@ -3,27 +3,35 @@ from marshmallow import Schema, fields, validate
 # ---------------------
 # Admin Schemas
 # ---------------------
-# TODO: Role is not implemented in the schemas -> check for later if problem
 class PlainAdminSchema(Schema):
-    admin_id = fields.Int(dump_only=True)
-    username = fields.Str(required=True)
-    email = fields.Email(required=True)
-    password = fields.Str(required=True, load_only=True)
+    admin_id   = fields.Int(dump_only=True)
+    username   = fields.Str(required=True)
+    email      = fields.Email(required=True)
+    password   = fields.Str(required=True, load_only=True)
     first_name = fields.Str()
-    last_name = fields.Str()
+    last_name  = fields.Str()
     created_at = fields.DateTime(dump_only=True)
     last_login = fields.DateTime(dump_only=True)
 
+class AdminUpdateSchema(Schema):
+    username   = fields.Str()
+    email      = fields.Email()
+    password   = fields.Str(load_only=True)
+    first_name = fields.Str()
+    last_name  = fields.Str()
+
 class PlainAdminActivityLogSchema(Schema):
-    log_id = fields.Int(dump_only=True)
-    activity_type = fields.Str(required=True)
-    description = fields.Str()
+    log_id             = fields.Int(dump_only=True)
+    activity_type      = fields.Str(required=True)
+    description        = fields.Str()
     activity_timestamp = fields.DateTime(dump_only=True)
-    admin_id = fields.Int(required=True)
+    admin_id           = fields.Int(required=True)
 
 class AdminSchema(PlainAdminSchema):
-    # Nested list of activity logs related to this admin
-    activity_logs = fields.List(fields.Nested(PlainAdminActivityLogSchema), dump_only=True)
+    activity_logs = fields.List(
+        fields.Nested(PlainAdminActivityLogSchema),
+        dump_only=True
+    )
 
 
 # ---------------------
@@ -42,12 +50,24 @@ class PlainAirControlDepSchema(Schema):
     created_at = fields.DateTime(dump_only=True)
     last_login = fields.DateTime(dump_only=True)
 
+    admin_id = fields.Int(dump_only=True)
+    deleted_at = fields.DateTime(dump_only=True)
+
+class AirControlUpdateSchema(Schema):
+    username = fields.Str()
+    email = fields.Email()
+    password = fields.Str(load_only=True)
+    first_name = fields.Str()
+    last_name = fields.Str()
+    phone_number = fields.Str()
+    department = fields.Str()
+
 class PlainAirControlActivityLogSchema(Schema):
-    log_id = fields.Int(dump_only=True)
+    ac_log_id = fields.Int(dump_only=True)
     activity_type = fields.Str(required=True)
     description = fields.Str()
     activity_timestamp = fields.DateTime(dump_only=True)
-    staff_id = fields.Int(required=True)
+    staff_id = fields.Int()
     flight_id = fields.Int(required=True)
 
 class AirControlActivityLogSchema(PlainAirControlActivityLogSchema):
@@ -59,7 +79,6 @@ class AirControlDepSchema(PlainAirControlDepSchema):
     # Include activity logs and flights associated with the air control staff.
     activity_logs = fields.List(fields.Nested(PlainAirControlActivityLogSchema), dump_only=True)
     flights = fields.List(fields.Nested(lambda: PlainFlightSchema()), dump_only=True)
-
 
 # ---------------------
 # Flight Schemas
@@ -96,7 +115,7 @@ class PlainBookingSchema(Schema):
     booking_status = fields.Str(required=True)
     booking_date = fields.DateTime(dump_only=True)
     total_price = fields.Decimal(as_string=True, required=True)
-    user_id = fields.Int(required=True)
+    user_id = fields.Int()
 
 class BookingSchema(PlainBookingSchema):
     flight = fields.Nested(PlainFlightSchema, dump_only=True)
@@ -118,7 +137,6 @@ class PlainFeedbackSchema(Schema):
 class FeedbackSchema(PlainFeedbackSchema):
     flight = fields.Nested(PlainFlightSchema, dump_only=True)
     user = fields.Nested(lambda: PlainUserSchema(), dump_only=True)
-
 
 # ---------------------
 # Payment Method and Transaction Schemas
@@ -151,7 +169,6 @@ class PlainTransactionSchema(Schema):
 class TransactionSchema(PlainTransactionSchema):
     payment_method = fields.Nested(PlainPaymentMethodSchema, dump_only=True)
 
-
 # ---------------------
 # User Schemas
 # ---------------------
@@ -163,7 +180,7 @@ class PlainUserSchema(Schema):
     first_name = fields.Str(required=True)
     last_name = fields.Str(required=True)
     phone_number = fields.Str()
-    account_status = fields.Int(required=True)
+    account_status = fields.Int(required=False)
     date_of_birth = fields.Date()
     created_at = fields.DateTime(dump_only=True)
     last_login = fields.DateTime(dump_only=True)
