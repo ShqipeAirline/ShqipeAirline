@@ -93,7 +93,7 @@ class PlainFlightSchema(Schema):
     total_capacity = fields.Int(required=True)
     available_seats = fields.Int(required=True)
     status = fields.Str(required=True)
-    created_by = fields.Int(required=True)
+    created_by = fields.Int(required=False)
 
 class FlightSchema(PlainFlightSchema):
     # Nest related bookings, feedbacks, and activity logs
