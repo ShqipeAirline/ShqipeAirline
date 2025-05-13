@@ -89,7 +89,7 @@ function App() {
         }>
           <Route index element={<Dashboard/>} />
           <Route path="schedule" element={<Schedule/>} />
-          <Route path="flight-details" element={<FlightDetails/>} />
+          <Route path="flight-details/:flight_id" element={<FlightDetails/>} />
           <Route path="passenger-view" element={<AcdPassView/>} />
           <Route path="add-flight" element={<AcdAddFlight/>} />
           <Route path="update-flight" element={<AcdUpdateFlight/>} />

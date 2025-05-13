@@ -1,46 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AcdSchedule.css';
 import line from '../../images/line.png';
 import devider from '../../images/Divider.png';
 import deviderv from '../../images/dividerv.png';
 import { Link } from 'react-router-dom';
 import FlightSearch from '../../components/forms/FlightSearch';
-
-const flights = [
-  { 
-    id: 'SH-749789',
-    departureTime: '6:00 AM', 
-    departurePlace: 'Los Angeles', 
-    arrivalTime: '9:00 PM', 
-    arrivalPlace: 'New York', 
-    duration: '13 hours',
-    aircraft: 'Boeing 757 300',
-    airline: 'Shqipe Airline',
-    departureAirport: 'Los Angeles International Airport (LAX)',
-    arrivalAirport: 'John F. Kennedy International Airport (JFK)',
-    departureTerminal: 'Terminal B',
-    arrivalTerminal: 'Terminal 4',
-    date: 'June 1, 2025'
-  },
-  { 
-    id: 'SH-749790',
-    departureTime: '10:00 AM', 
-    departurePlace: 'Tirana', 
-    arrivalTime: '1:00 PM', 
-    arrivalPlace: 'Berlin', 
-    duration: '3 hours',
-    aircraft: 'Airbus A320',
-    airline: 'Shqipe Airline',
-    departureAirport: 'Tirana International Airport (TIA)',
-    arrivalAirport: 'Berlin Brandenburg Airport (BER)',
-    departureTerminal: 'Terminal 1',
-    arrivalTerminal: 'Terminal 2',
-    date: 'June 2, 2025'
-  },
-];
+import api from '../../api/axios';
 
 const AcdSchedule = () => {
-  const [searchResults, setSearchResults] = useState(flights);
+  const [flights, setFlights] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchFlights = async () => {
+      try {
+        const { data } = await api.get('/flights');
+        setFlights(data);
+        setSearchResults(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching flights:', error);
+        setError(error.response?.data?.message || 'Failed to fetch flights. Please try again later.');
+        setLoading(false);
+      }
+    };
+
+    fetchFlights();
+  }, []);
+
+  const formatDateTime = (dateString, timeString) => {
+    const date = new Date(dateString);
+    const options = { weekday: 'short', month: 'short', day: 'numeric' };
+    const formattedDate = date.toLocaleDateString(undefined, options);
+    return `${formattedDate} at ${timeString}`;
+  };
+
+  if (loading) {
+    return <div className="schedule-page">Loading flights...</div>;
+  }
+
+  if (error) {
+    return <div className="schedule-page">{error}</div>;
+  }
 
   return (
     <div className="schedule-page">
@@ -50,28 +53,39 @@ const AcdSchedule = () => {
         <p>No flights found for the selected search criteria.</p>
       ) : (
         searchResults.map((flight) => (
-          <div className="schedule-content" key={flight.id}>
+          <div className="schedule-content" key={flight.flight_id}>
             <div className="schedule-info">
               <div className="info-flight">
                 <h2>{flight.airline}</h2>
-                <h5>Flight {flight.id}</h5>
+                <h5>Flight {flight.flight_number}</h5>
+                <p className="flight-date">{formatDateTime(flight.departure_date, flight.departure_time)}</p>
               </div>
               <img src={deviderv} alt="divider vertical" />
               <div className="info-flight">
-                <h2>{flight.departureTime}</h2>
-                <h5>{flight.departurePlace}</h5>
+                <h2>{flight.departure_time}</h2>
+                <h5>{flight.departure_airport}</h5>
+                <p className="country-info">{flight.departure_country}</p>
               </div>
               <div className="info-flight-route">
                 <img src={line} alt="airplane route" />
                 <h6>{flight.duration} - Direct</h6>
               </div>
               <div className="info-flight">
-                <h2>{flight.arrivalTime}</h2>
-                <h5>{flight.arrivalPlace}</h5>
+                <h2>{flight.arrival_time}</h2>
+                <h5>{flight.arrival_airport}</h5>
+                <p className="country-info">{flight.arrival_country}</p>
               </div>
             </div>
             <img src={devider} alt="divider" className="divider" />
-            <Link to={`flight-details/${flight.id}`} className="view-button">
+            <div className="flight-price">
+              <span className="price-label">From</span>
+              <span className="price-amount">${parseFloat(flight.base_price).toFixed(2)}</span>
+            </div>
+            <Link 
+              to={`/acd-dashboard/flight-details/${flight.flight_id}`}
+              state={{ flight }}
+              className="view-button"
+            >
               View Details
             </Link>
           </div>

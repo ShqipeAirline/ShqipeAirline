@@ -42,15 +42,32 @@ const AcdAddFlight = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Format the data before sending
       const flightData = {
         ...addFlight,
+        // Ensure proper string formatting for text fields
+        flight_number: addFlight.flight_number.trim(),
+        airline: addFlight.airline.trim(),
+        departure_airport: addFlight.departure_airport.trim(),
+        departure_country: addFlight.departure_country.trim(),
+        arrival_airport: addFlight.arrival_airport.trim(),
+        arrival_country: addFlight.arrival_country.trim(),
+        // Convert numeric fields to proper types
+        available_seats: parseInt(addFlight.available_seats),
+        total_capacity: parseInt(addFlight.total_capacity),
+        base_price: parseFloat(addFlight.base_price),
         created_by: user?.user_id || 1
       };
-      await axios.post('/flights', flightData);
+
+      console.log('Sending flight data:', flightData); // Debug log
+      const response = await axios.post('/flights', flightData);
+      console.log('Response:', response.data); // Debug log
+
       // Refresh the flights list
-      const response = await axios.get('/flights');
-      setSearchResults(response.data);
+      const flightsResponse = await axios.get('/flights');
+      setSearchResults(flightsResponse.data);
       setShowEditModal(false);
+      
       // Reset form
       setAddFlight({
         flight_number: '',
@@ -69,7 +86,8 @@ const AcdAddFlight = () => {
         created_by: user?.user_id || 1
       });
     } catch (error) {
-      console.error('Error adding flight:', error);
+      console.error('Error adding flight:', error.response?.data || error);
+      alert(error.response?.data?.message || 'Failed to add flight. Please check your input and try again.');
     }
   };
 
