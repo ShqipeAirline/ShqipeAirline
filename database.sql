@@ -18,6 +18,21 @@ CREATE TABLE User
     UNIQUE (email)
 );
 
+CREATE TABLE Admin
+(
+    admin_id INT AUTO_INCREMENT NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'admin',
+    password VARCHAR(511) NOT NULL,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_login DATETIME,
+    PRIMARY KEY (admin_id),
+    UNIQUE (username),
+    UNIQUE (email)
+);
 
 CREATE TABLE Payment_Methods
 (
@@ -56,10 +71,16 @@ CREATE TABLE Flights
     flight_number VARCHAR(20) NOT NULL,        -- e.g., "AC123", could also be INT if strictly numeric
     airline VARCHAR(100) NOT NULL,
     departure_airport VARCHAR(10) NOT NULL,    -- e.g., "JFK", "LAX"
+    departure_country VARCHAR(100) NOT NULL,   -- e.g., "United States", "Canada"
     arrival_airport VARCHAR(10) NOT NULL,
+    arrival_country VARCHAR(100) NOT NULL,     -- e.g., "United States", "Canada"
+    departure_date DATE NOT NULL,              -- Date of departure
+    departure_time TIME NOT NULL,              -- Time of departure (HH:MM)
+    arrival_time TIME NOT NULL,                -- Time of arrival (HH:MM)
     total_capacity INT NOT NULL,
     available_seats INT NOT NULL,
     status VARCHAR(50) NOT NULL,               -- e.g., "on-time", "delayed"
+    base_price DECIMAL(10,2) NOT NULL,         -- Base price for economy class
     created_by INT NOT NULL,                   -- possibly references some staff/admin ID
     PRIMARY KEY (flight_id)
 );
@@ -78,8 +99,11 @@ CREATE TABLE Air_Control_Dep
     department VARCHAR(100),                  
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME,
+    admin_id INT NOT NULL,
+    deleted_at DATETIME,
     PRIMARY KEY (staff_id),
-    UNIQUE (username)
+    UNIQUE (username),
+    FOREIGN KEY (admin_id) REFERENCES Admin(admin_id)
 );
 
 
@@ -127,23 +151,6 @@ CREATE TABLE Feedback
 );
 
 
-CREATE TABLE Admin
-(
-    admin_id INT AUTO_INCREMENT NOT NULL,
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    role VARCHAR(50) NOT NULL DEFAULT 'admin',
-    password VARCHAR(511) NOT NULL,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_login DATETIME,
-    PRIMARY KEY (admin_id),
-    UNIQUE (username),
-    UNIQUE (email)
-);
-
-
 CREATE TABLE Admin_Activity_Log
 (
     log_id INT AUTO_INCREMENT NOT NULL,
@@ -180,18 +187,26 @@ VALUES
   (2, 'PayPal', 'paypal_token_67890', '0000', 'N/A', NULL, NULL, 1);
 
 -- Insert sample flights (created_by is set to 1 as an example)
-INSERT INTO Flights (flight_number, airline, departure_airport, arrival_airport, total_capacity, available_seats, status, created_by)
+INSERT INTO Flights (flight_number, airline, departure_airport, departure_country, arrival_airport, arrival_country, departure_date, departure_time, arrival_time, total_capacity, available_seats, status, base_price, created_by)
 VALUES
-  ('AC123', 'Air Canada', 'JFK', 'LAX', 200, 50, 'on-time', 1),
-  ('UA456', 'United Airlines', 'LAX', 'ORD', 180, 20, 'delayed', 1);
+  ('AC123', 'Air Canada', 'JFK', 'Toronto', 'LAX', 'Los Angeles', '2024-04-15', '14:30:00', '17:45:00', 200, 50, 'on-time', 350.00, 1),
+  ('UA456', 'United Airlines', 'LAX', 'Los Angeles', 'ORD', 'Chicago', '2024-04-16', '09:15:00', '14:30:00', 180, 20, 'delayed', 400.00, 1);
+
+-- Insert sample admin users
+-- For admin1: original password is "admin1"
+-- For admin2: original password is "admin2"
+INSERT INTO Admin (username, email, password, first_name, last_name)
+VALUES
+  ('admin1', 'admin1@example.com', '$pbkdf2-sha256$29000$JWRMSel9r7U2RmgNwXhPKQ$po0BIdDojJ02a3gjnZkgkhfDQo11IOnt8mZ75xWdTKI', 'Alice', 'Admin'),
+  ('admin2', 'admin2@example.com', '$pbkdf2-sha256$29000$BoDQ2lurFUKIca4Vwvi/Fw$pmk3UlhKmls7lozRvYn7ziLg4aOOAap9eV3p76nRGYI', 'Bob', 'Boss');
 
 -- Insert sample air control staff
 -- For Jim Beam: original password is "staff1"
 -- For Lisa Ray: original password is "staff2"
-INSERT INTO Air_Control_Dep (username, email, password, first_name, last_name, phone_number, department)
+INSERT INTO Air_Control_Dep (username, email, password, first_name, last_name, phone_number, department, admin_id)
 VALUES
-  ('control.jim', 'jim.control@example.com', '$pbkdf2-sha256$29000$GCNESEkJoRTiPMd4T8m5Nw$ZIwIAqLd9CIRU0UwNSEJQkV0ir7FOpqVp8l7/0ZyX58', 'Jim', 'Beam', '555-9876', 'Flight Operations'),
-  ('control.lisa', 'lisa.control@example.com', '$pbkdf2-sha256$29000$W4uxlpLSWqu1Vup9T0npXQ$WJbwpiSMR/1pKnH4FmMhvpZkEwX0Au0KpbdBnvaT5AM', 'Lisa','Ray','555-9213','Scheduling');
+  ('control.jim', 'jim.control@example.com', '$pbkdf2-sha256$29000$GCNESEkJoRTiPMd4T8m5Nw$ZIwIAqLd9CIRU0UwNSEJQkV0ir7FOpqVp8l7/0ZyX58', 'Jim', 'Beam', '555-9876', 'Flight Operations', 1),
+  ('control.lisa', 'lisa.control@example.com', '$pbkdf2-sha256$29000$W4uxlpLSWqu1Vup9T0npXQ$WJbwpiSMR/1pKnH4FmMhvpZkEwX0Au0KpbdBnvaT5AM', 'Lisa','Ray','555-9213','Scheduling', 1);
 
 -- Insert sample bookings (using flight_id 1 & 2 and user_id 1 & 2 respectively)
 INSERT INTO Bookings (flight_id, seat_number, extra_baggage, travel_insurance, booking_status, total_price, user_id)
@@ -216,14 +231,6 @@ INSERT INTO Air_Control_Activity_Log (staff_id, activity_type, flight_id)
 VALUES
   (1, 'Update Flight', 1),
   (2, 'Monitor Flight', 2);
-
--- Insert sample admin users
--- For admin1: original password is "admin1"
--- For admin2: original password is "admin2"
-INSERT INTO Admin (username, email, password, first_name, last_name)
-VALUES
-  ('admin1', 'admin1@example.com', '$pbkdf2-sha256$29000$JWRMSel9r7U2RmgNwXhPKQ$po0BIdDojJ02a3gjnZkgkhfDQo11IOnt8mZ75xWdTKI', 'Alice', 'Admin'),
-  ('admin2', 'admin2@example.com', '$pbkdf2-sha256$29000$BoDQ2lurFUKIca4Vwvi/Fw$pmk3UlhKmls7lozRvYn7ziLg4aOOAap9eV3p76nRGYI', 'Bob', 'Boss');
 
 -- Insert sample admin activity logs
 INSERT INTO Admin_Activity_Log (activity_type, description, admin_id)

@@ -51,10 +51,9 @@
 }
 
 .booking-label-hint {
-  font-size: 0.92rem;
-  color: #a0a0a0;
+  font-size: 0.8rem;
+  color: #666;
   font-style: italic;
-  font-weight: 400;
 }
 
 .booking-input {
@@ -111,4 +110,76 @@
 
 .booking-submit:hover {
   background: #2441c9;
+}
+
+.location-info {
+  position: relative;
+  width: 100%;
+}
+
+.location-info .booking-input {
+  font-size: 0.95rem;
+  color: #333;
+  padding: 10px;
+  background-color: #f8f8f8;
+}
+
+.booking-error {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #ef9a9a;
+  font-size: 14px;
+}
+
+.booking-submit:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.price-summary {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border: 1px solid #e9ecef;
+}
+
+.price-summary h3 {
+  color: #2c5282;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.price-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 0.95rem;
+  color: #4a5568;
+}
+
+.price-row:last-child {
+  border-bottom: none;
+}
+
+.price-row.total {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2d3748;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #e9ecef;
 } 

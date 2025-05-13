@@ -1,12 +1,14 @@
 import React from 'react';
-import { Link, useLocation, Outlet } from 'react-router-dom';
+import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import { IoIosArrowDown } from "react-icons/io";
 import './AcdLayout.css';
+import useUserStore from '../store/userStore';
 
 const AdminLayout = () => {
   const location = useLocation();
   const currentPath = location.pathname;
-
+  const user = useUserStore(state => state.user);
+  const navigate = useNavigate();
   return (
     <div className="acd-layout">
       <div className="sidebar">
@@ -47,17 +49,11 @@ const AdminLayout = () => {
         <header className="page-header">
           <h1>Admin Dashboard</h1>
           <div className="header-right">
-            <div className="search-bar">
-              <button type="button">🔍</button>
-              <input type="text" placeholder="Search anything" />
-            </div>
             <div className="user-profile">
-              <span></span>
               <div className="user-info">
-                <span className="user-name">Name Surname</span>
+                <span onClick={() => navigate('/admin-dashboard/profile')} className="user-name">{user ? `${user.firstName} ${user.lastName}` : 'Loading...'}</span>
                 <span className="user-role">Admin</span>
               </div>
-              <button className="profile-dropdown"><IoIosArrowDown /></button>
             </div>
           </div>
         </header>

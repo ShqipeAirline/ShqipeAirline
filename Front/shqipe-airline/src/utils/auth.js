@@ -46,4 +46,23 @@ export const isAuthenticated = () => {
 export const getAuthHeader = () => {
   const accessToken = localStorage.getItem('accessToken');
   return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+};
+
+// Get user information from JWT token
+export const getUserInfo = () => {
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) return null;
+  
+  try {
+    // JWT tokens are in format: header.payload.signature
+    const payload = JSON.parse(atob(accessToken.split('.')[1]));
+    return {
+      firstName: payload.first_name,
+      lastName: payload.last_name,
+      role: payload.role
+    };
+  } catch (error) {
+    console.error('Error decoding JWT token:', error);
+    return null;
+  }
 }; 

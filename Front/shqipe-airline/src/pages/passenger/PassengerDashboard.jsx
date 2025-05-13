@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from './PassengerDashboard.module.css';
+import useUserStore from '../../store/userStore';
+import api from '../../api/axios';
 
 const promoDestinations = [
   {
@@ -34,48 +36,52 @@ const promoDestinations = [
   },
 ];
 
-// temp booking data matching backend fields from booking.py
-const bookingsData = [
-  {
-    bookings_id: 1,
-    flight_id: 101,
-    seat_number: '12A',
-    extra_baggage: 1,
-    travel_insurance: 1,
-    booking_status: 'Purchased',
-    booking_date: '2028-07-20T00:00:00Z',
-    total_price: 500.00,
-    user_id: 201,
-    // for table display only:
-    booking_code: 'CN-KL2345',
-    route: 'Frankfurt to Bangkok',
-  },
-  {
-    bookings_id: 2,
-    flight_id: 101,
-    seat_number: '12B',
-    extra_baggage: 0,
-    travel_insurance: 0,
-    booking_status: 'Pending',
-    booking_date: '2028-07-20T00:00:00Z',
-    total_price: 500.00,
-    user_id: 201,
-    booking_code: 'CN-KL2345',
-    route: 'Frankfurt to Bangkok',
-  },
-];
+function capitalize(str) {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 const PassengerDashboard = () => {
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const { user } = useUserStore();
 
-  const filteredBookings = bookingsData.filter(b => {
-    const matchesSearch = b.booking_code.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === 'All' || b.booking_status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedSearch(search), 250);
+    return () => clearTimeout(handler);
+  }, [search]);
 
-  // Format date for display
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (!user) return;
+      setLoading(true);
+      setError('');
+      try {
+        const { data } = await api.get(`/user/${user.user_id}/bookings`);
+        setBookings(data);
+      } catch (err) {
+        console.log(err);
+        setError('Failed to fetch bookings');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBookings();
+  }, [user]);
+
+  const filteredBookings = useMemo(() => {
+    const searchVal = debouncedSearch.toLowerCase();
+    return bookings.filter(b => {
+      const matchesSearch = b.bookings_id && String(b.bookings_id).includes(searchVal);
+      const matchesStatus = statusFilter === 'All' || b.booking_status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [bookings, debouncedSearch, statusFilter]);
+
   const formatDate = (isoDate) => {
     const date = new Date(isoDate);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -102,7 +108,7 @@ const PassengerDashboard = () => {
         <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
           <input
             type="text"
-            placeholder="Search by booking code..."
+            placeholder="Search by booking ID..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             style={{ padding: '8px', borderRadius: '6px', border: '1px solid #ccc', minWidth: 180 }}
@@ -115,34 +121,46 @@ const PassengerDashboard = () => {
             <option value="All">All Statuses</option>
             <option value="Purchased">Purchased</option>
             <option value="Pending">Pending</option>
+            <option value="confirmed">confirmed</option>
+            <option value="canceled">canceled</option>
           </select>
         </div>
-        <table className={styles.purchasesTable}>
-          <thead>
-            <tr>
-              <th>Booking Code</th>
-              <th>Route</th>
-              <th>Date</th>
-              <th>Amount</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredBookings.map((b, idx) => (
-              <tr key={b.bookings_id}>
-                <td>{b.booking_code}</td>
-                <td>{b.route}</td>
-                <td>{formatDate(b.booking_date)}</td>
-                <td>{`$${Number(b.total_price).toFixed(2)}`}</td>
-                <td>
-                  <span className={b.booking_status === 'Purchased' ? styles.statusPurchased : styles.statusPending}>
-                    {b.booking_status}
-                  </span>
-                </td>
+        {loading ? (
+          <div>Loading bookings...</div>
+        ) : error ? (
+          <div style={{ color: 'red' }}>{error}</div>
+        ) : (
+          <table className={styles.purchasesTable}>
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Seat Number</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredBookings.map((b) => (
+                <tr key={b.bookings_id}>
+                  <td>{b.bookings_id}</td>
+                  <td>{b.seat_number}</td>
+                  <td>{formatDate(b.booking_date)}</td>
+                  <td>{`$${Number(b.total_price).toFixed(2)}`}</td>
+                  <td>
+                    <span className={
+                      b.booking_status === 'Purchased' || b.booking_status === 'confirmed'
+                        ? styles.statusPurchased
+                        : styles.statusPending
+                    }>
+                      {capitalize(b.booking_status)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </section>
       <footer className={styles.dashboardFooter}>
        <a href="https://www.rentalcars.com/" target='_blank'> <button className={styles.footerBtn}>Find your ideal rental vehicle!</button></a>

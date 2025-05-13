@@ -11,3 +11,4 @@ flask-migrate
 gunicorn
 requests
 pymysql
+flask-cors

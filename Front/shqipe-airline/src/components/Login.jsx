@@ -5,13 +5,15 @@ import PassField from './forms/PassField';
 import Bttn from './forms/Bttn';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { setTokens, getUserRole } from '../utils/auth';
+import useUserStore from '../store/userStore';
+import api from '../api/axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const login = useUserStore(state => state.login);
 
   const handleLogin = async () => {
     const payload = {
@@ -20,43 +22,65 @@ const Login = () => {
     };
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-  
-      const data = await response.json();
-  
-      if (!response.ok) {
-        setError(data.message || "Login failed");
-        return;
-      }
-  
-      // Store tokens
-      setTokens(data.access_token, data.refresh_token);
+      console.log('Sending login request with payload:', payload);
       
-      // Get user role and redirect accordingly
-      const role = getUserRole();
-      
-      switch (role) {
-        case 'user':
-          navigate('/passenger-dashboard');
-          break;
-        case 'admin':
-          navigate('/admin-dashboard');
-          break;
-        case 'air control staff':
-          navigate('/acd-dashboard');
-          break;
-        default:
-          setError('Invalid user role');
-          break;
+      const { data } = await api.post("/login", payload);
+      console.log('Login response:', data);
+
+      // Decode the JWT token to get user data
+      try {
+        const tokenPayload = JSON.parse(atob(data.access_token.split('.')[1]));
+        console.log('Token payload:', tokenPayload);
+
+        // Create user data object from the token payload
+        const userData = {
+          firstName: tokenPayload.first_name || '',
+          lastName: tokenPayload.last_name || '',
+          email: tokenPayload.email || email,
+          role: tokenPayload.role,
+          user_id: tokenPayload.user_id
+        };
+        
+        console.log('Processed user data:', userData);
+        
+        if (!userData.role) {
+          console.error('Missing role in token payload:', tokenPayload);
+          setError('Invalid response from server: missing role');
+          return;
+        }
+
+        // Store tokens in localStorage
+        localStorage.setItem('accessToken', data.access_token);
+        if (data.refresh_token) {
+          localStorage.setItem('refreshToken', data.refresh_token);
+        }
+        
+        // Login using Zustand store
+        login(userData, data.access_token, data.refresh_token);
+        
+        // Redirect based on role
+        switch (userData.role) {
+          case 'user':
+            navigate('/passenger-dashboard');
+            break;
+          case 'admin':
+            navigate('/admin-dashboard');
+            break;
+          case 'air control staff':
+            navigate('/acd-dashboard');
+            break;
+          default:
+            console.log('Invalid role:', userData.role);
+            setError('Invalid user role');
+            break;
+        }
+      } catch (err) {
+        console.error('Error decoding token:', err);
+        setError('Error processing login response');
       }
     } catch (err) {
-      setError(err.message || 'An error occurred during login');
+      console.error('Login error:', err);
+      setError(err.response?.data?.message || err.message || 'An error occurred during login');
     }
   };
 

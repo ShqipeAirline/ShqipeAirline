@@ -30,6 +30,7 @@ import Profile from './passanger/Profile'
 import SearchFlight from './passanger/SearchFlight'
 import BookFlight from './passanger/BookFlight'
 import PassangerFeedback from './passanger/PassangerFeedback'
+import UserFeedbacks from './passanger/UserFeedbacks'
 import BookingConfirmation from './passanger/BookingConfirmation';
 import PassangerPayment from './passanger/PassangerPayment';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -75,6 +76,7 @@ function App() {
           <Route path="search" element={<SearchFlight/>}/>
           <Route path="book-flight" element={<BookFlight/>}/>
           <Route path="feedback" element={<PassangerFeedback />} />
+          <Route path="feedbacks" element={<UserFeedbacks />} />
           <Route path="booking-confirmation" element={<BookingConfirmation />} />
           <Route path="passanger-payment" element={<PassangerPayment />} />
         </Route>

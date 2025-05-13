@@ -17,10 +17,16 @@ class FlightUpdateSchema(Schema):
     flight_number = fields.Str()
     airline = fields.Str()
     departure_airport = fields.Str()
+    departure_country = fields.Str()
     arrival_airport = fields.Str()
+    arrival_country = fields.Str()
+    departure_date = fields.Date()
+    departure_time = fields.Time()
+    arrival_time = fields.Time()
     total_capacity = fields.Int()
     available_seats = fields.Int()
     status = fields.Str()
+    base_price = fields.Decimal(places=2)  # Base price for economy class
 
 # Create a blueprint for Air Control Department flight operations
 blp = Blueprint("AirControlFlights", "aircontrol", description="Operations for Air Control Department regarding flights")
@@ -69,7 +75,7 @@ class FlightDetail(MethodView):
         return flight
 
     @jwt_required()
-    @blp.arguments(FlightUpdateSchema) #TODO : REmoved partial=True here
+    @blp.arguments(FlightUpdateSchema)
     @blp.response(200, FlightSchema)
     def put(self, flight_data, flight_id):
         role_required()

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaExchangeAlt } from "react-icons/fa";
+import { FaExchangeAlt, FaUndo } from "react-icons/fa";
 import "./../../pages/acd/AcdSchedule.css";
 import deviderv from '../../images/dividerv.png';
 
@@ -8,16 +8,25 @@ export default function FlightSearch({ setResults, flights }) {
   const [to, setTo] = useState(""); 
   const [date, setDate] = useState(""); 
 
+  const handleReset = () => {
+    setFrom("");
+    setTo("");
+    setDate("");
+    setResults(flights);
+  };
+
   const handleSearch = () => {
     if (!from && !to && !date) {
       setResults(flights); 
       return;
     }
+    
 
     const filteredFlights = flights.filter(
       (flight) =>
-        (!from || flight.departurePlace.toLowerCase() === from.toLowerCase()) &&
-        (!to || flight.arrivalPlace.toLowerCase() === to.toLowerCase())
+        (!from || flight.departure_country.toLowerCase().includes(from.toLowerCase())) &&
+        (!to || flight.arrival_country.toLowerCase().includes(to.toLowerCase())) &&
+        (!date || flight.departure_date === date)
     );
 
     setResults(filteredFlights);
@@ -65,6 +74,10 @@ export default function FlightSearch({ setResults, flights }) {
         
         <button className="search-button" onClick={handleSearch}>
           Search
+        </button>
+        <button className="reset-button" onClick={handleReset}>
+          <FaUndo style={{ marginRight: '6px' }} />
+          Reset
         </button>
       </div>
     </div>

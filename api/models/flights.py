@@ -6,10 +6,16 @@ class Flight(db.Model):
     flight_number = db.Column(db.String(20), nullable=False)
     airline = db.Column(db.String(100), nullable=False)
     departure_airport = db.Column(db.String(10), nullable=False)
+    departure_country = db.Column(db.String(100), nullable=False)
     arrival_airport = db.Column(db.String(10), nullable=False)
+    arrival_country = db.Column(db.String(100), nullable=False)
+    departure_date = db.Column(db.Date, nullable=False)
+    departure_time = db.Column(db.Time, nullable=False)
+    arrival_time = db.Column(db.Time, nullable=False)
     total_capacity = db.Column(db.Integer, nullable=False)
     available_seats = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(50), nullable=False)
+    base_price = db.Column(db.Numeric(10, 2), nullable=False)  # Base price for economy class
     created_by = db.Column(db.Integer, nullable=False)
 
     # Relationships

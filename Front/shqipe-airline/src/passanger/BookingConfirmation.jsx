@@ -22,7 +22,8 @@ const BookingConfirmation = () => {
 
       <div className="booking-confirmation-details">
         <h3>Booking Details</h3>
-        <p><strong>Flight:</strong> {flight.airline} from {flight.departurePlace} to {flight.arrivalPlace}</p>
+        <p><strong>Flight:</strong> {flight.airline} from {flight.departure_airport} to {flight.arrival_airport}</p>
+        <p><strong>Flight Number:</strong> {flight.flight_number}</p>
         <p><strong>Class:</strong> {formData.class}</p>
         <p><strong>Seat Number:</strong> {formData.seat_number}</p>
         <p><strong>Extra Baggage:</strong> {formData.extra_baggage} kg</p>

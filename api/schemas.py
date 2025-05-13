@@ -89,17 +89,22 @@ class PlainFlightSchema(Schema):
     flight_number = fields.Str(required=True)
     airline = fields.Str(required=True)
     departure_airport = fields.Str(required=True)
+    departure_country = fields.Str(required=True)
     arrival_airport = fields.Str(required=True)
+    arrival_country = fields.Str(required=True)
+    departure_date = fields.Date(required=True)
+    departure_time = fields.Time(required=True)
+    arrival_time = fields.Time(required=True)
     total_capacity = fields.Int(required=True)
     available_seats = fields.Int(required=True)
     status = fields.Str(required=True)
-    created_by = fields.Int(required=False)
+    base_price = fields.Decimal(places=2, required=True)  # Base price for economy class
+    created_by = fields.Int(required=True)
 
 class FlightSchema(PlainFlightSchema):
-    # Nest related bookings, feedbacks, and activity logs
     bookings = fields.List(fields.Nested(lambda: PlainBookingSchema()), dump_only=True)
     feedbacks = fields.List(fields.Nested(lambda: PlainFeedbackSchema()), dump_only=True)
-    activity_logs = fields.List(fields.Nested(PlainAirControlActivityLogSchema), dump_only=True)
+    activity_logs = fields.List(fields.Nested(lambda: PlainAirControlActivityLogSchema()), dump_only=True)
 
 
 # ---------------------
@@ -189,3 +194,13 @@ class UserSchema(PlainUserSchema):
     bookings = fields.List(fields.Nested(PlainBookingSchema), dump_only=True)
     feedbacks = fields.List(fields.Nested(PlainFeedbackSchema), dump_only=True)
     payment_methods = fields.List(fields.Nested(PlainPaymentMethodSchema), dump_only=True)
+
+class UserUpdateSchema(Schema):
+    user_id = fields.Int(dump_only=True)
+    first_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
+    last_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
+    email = fields.Email(required=True)
+    birthday = fields.Date(required=True)
+    gender = fields.Str(required=True, validate=validate.OneOf(['Male', 'Female', 'Other']))
+    password = fields.Str(load_only=True, validate=validate.Length(min=6))
+    role = fields.Str(dump_only=True)

@@ -5,6 +5,7 @@ import PassField from './forms/PassField';
 import Bttn from './forms/Bttn';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import api from '../api/axios';
 
 const Register = () => {
   // State for each required field
@@ -31,22 +32,11 @@ const Register = () => {
     };
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
-
+      await api.post('/register', payload);
       setSuccess('Registration successful! Please log in.');
       // Optionally, clear the fields or redirect the user
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || err.message || 'Registration failed');
     }
   };
 

@@ -21,6 +21,9 @@ load_dotenv()  # Load environment variables from .env
 def create_app(db_url=None):
     app = Flask(__name__)
 
+    # Configure CORS
+    CORS(app, resources={r"/*": {"origins": ["http://localhost:5173"]}})
+
     app.config["PROPAGATE_EXCEPTIONS"] = True  # if an exception happens in flask extension
     # propagate it to main app
     app.config["API_TITLE"] = "Stores REST API"  # flask-smorest documentation
@@ -108,7 +111,6 @@ def create_app(db_url=None):
     return app
 
 app = create_app()
-CORS(app)
 
 @app.route("/")
 def hello():

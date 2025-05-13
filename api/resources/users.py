@@ -69,7 +69,6 @@ class UserResource(MethodView):
     @jwt_required()
     @blp.response(200, PlainUserSchema)
     def get(self, user_id):
-        admin_required()
         user = User.query.get(user_id)
         return user
 
@@ -90,11 +89,11 @@ def get_identity(user):
     Adjust attribute names if necessary.
     """
     if hasattr(user, "user_id"):
-        return user.user_id
+        return str(user.user_id)
     elif hasattr(user, "admin_id"):
-        return user.admin_id
+        return str(user.admin_id)
     elif hasattr(user, "air_control_id"):
-        return user.air_control_id
+        return str(user.air_control_id)
     return None
 
 @blp.route("/login")
@@ -103,6 +102,8 @@ class UserLogin(MethodView):
     def post(self, user_data):
         email = user_data["email"]
         password = user_data["password"]
+
+        print(f"Login attempt for email: {email}")  # Debug log
 
         # Checking the admin table first.
         user = Admin.query.filter(Admin.email == email).first()
@@ -118,19 +119,52 @@ class UserLogin(MethodView):
             user = User.query.filter(User.email == email).first()
             role = "user"
 
+        print(f"Found user: {user}, Role: {role}")  # Debug log
+
         if user and pbkdf2_sha256.verify(password, user.password):
             user.last_login = datetime.now()
             db.session.commit()
             identity = get_identity(user)
-            additional_claims = {"role": role}
+            
+            if not identity:
+                abort(500, message="Failed to generate user identity")
+            
+            # Include user data in the token claims
+            additional_claims = {
+                "role": role,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "user_id": user.user_id
+            }
+            
+            print(f"Additional claims: {additional_claims}")  # Debug log
+            
             access_token = create_access_token(identity=identity, fresh=True, additional_claims=additional_claims)
+            
+            # Prepare response data
+            response_data = {
+                "access_token": access_token,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "role": role
+            }
+            
+            print(f"Response data: {response_data}")  # Debug log
+            
             # Only regular users receive a refresh token !!!
             if role == "user":
                 refresh_token = create_refresh_token(identity=identity, additional_claims=additional_claims)
-                return {"access_token": access_token, "refresh_token": refresh_token}, 200
-            else:
-                return {"access_token": access_token}, 200
+                response_data["refresh_token"] = refresh_token
+            
+            # Convert response to JSON and print it
+            response_json = jsonify(response_data)
+            print(f"Final response: {response_json.get_data(as_text=True)}")
+            
+            return response_data, 200
 
+        print("Invalid credentials")  # Debug log
         abort(401, message="Invalid credentials.")
 
 #TODO revoke the refresh token too maybe???
