@@ -16,7 +16,7 @@ class Flight(db.Model):
     available_seats = db.Column(db.Integer, nullable=False)
     status = db.Column(db.String(50), nullable=False)
     base_price = db.Column(db.Numeric(10, 2), nullable=False)  # Base price for economy class
-    created_by = db.Column(db.Integer, nullable=False)
+    created_by = db.Column(db.Integer, nullable=True, default=1)  # Default to user ID 1 (admin)
 
     # Relationships
     bookings = db.relationship('Booking', backref='flight', lazy=True)

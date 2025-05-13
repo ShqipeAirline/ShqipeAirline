@@ -1,57 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AcdFlights.css';
 import { Link } from 'react-router-dom';
-
-const flights = [
-  { 
-    id: 'SH-749789',
-    departureTime: '6:00 AM', 
-    departurePlace: 'Los Angeles', 
-    arrivalTime: '9:00 PM', 
-    arrivalPlace: 'New York', 
-    duration: '13 hours',
-    aircraft: 'Boeing 757 300',
-    airline: 'Shqipe Airline',
-    departureAirport: 'Los Angeles International Airport (LAX)',
-    arrivalAirport: 'John F. Kennedy International Airport (JFK)',
-    departureTerminal: 'Terminal B',
-    arrivalTerminal: 'Terminal 4',
-    date: 'June 1, 2025',
-    capacity: '200',
-    status: 'On Time'
-  },
-  { 
-    id: 'SH-749790',
-    departureTime: '10:00 AM', 
-    departurePlace: 'Tirana', 
-    arrivalTime: '1:00 PM', 
-    arrivalPlace: 'Berlin', 
-    duration: '3 hours',
-    aircraft: 'Airbus A320',
-    airline: 'Shqipe Airline',
-    departureAirport: 'Tirana International Airport (TIA)',
-    arrivalAirport: 'Berlin Brandenburg Airport (BER)',
-    departureTerminal: 'Terminal 1',
-    arrivalTerminal: 'Terminal 2',
-    date: 'June 2, 2025',
-    capacity: '180',
-    status: 'Delayed'
-  },
-];
+import axios from '../../api/axios'
+import useUserStore from '../../store/userStore';
 
 const AcdAddFlight = () => {
-  const [searchResults, setSearchResults] = useState(flights);
+  const { user } = useUserStore();
+  const [searchResults, setSearchResults] = useState([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [addFlight, setAddFlight] = useState({
-    flightNumber: '',
-    departurePlace: '',
-    arrivalPlace: '',
-    date: '',
-    departureTime: '',
-    arrivalTime: '',
-    capacity: '',
-    status: ''
+    flight_number: '',
+    airline: '',
+    departure_airport: '',
+    departure_country: '',
+    arrival_airport: '',
+    arrival_country: '',
+    departure_date: '',
+    departure_time: '',
+    arrival_time: '',
+    available_seats: '',
+    total_capacity: '',
+    base_price: '',
+    status: 'on-time',
+    created_by: user?.user_id || 1
   });
+
+  useEffect(() => {
+    const fetchFlights = async () => {
+      try {
+        const response = await axios.get('/flights');
+        console.log(response.data);
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error('Error fetching flights:', error);
+      }
+    };
+
+    fetchFlights();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const flightData = {
+        ...addFlight,
+        created_by: user?.user_id || 1
+      };
+      await axios.post('/flights', flightData);
+      // Refresh the flights list
+      const response = await axios.get('/flights');
+      setSearchResults(response.data);
+      setShowEditModal(false);
+      // Reset form
+      setAddFlight({
+        flight_number: '',
+        airline: '',
+        departure_airport: '',
+        departure_country: '',
+        arrival_airport: '',
+        arrival_country: '',
+        departure_date: '',
+        departure_time: '',
+        arrival_time: '',
+        available_seats: '',
+        total_capacity: '',
+        base_price: '',
+        status: 'on-time',
+        created_by: user?.user_id || 1
+      });
+    } catch (error) {
+      console.error('Error adding flight:', error);
+    }
+  };
 
   const handleEdit = () => {
     setShowEditModal(true);
@@ -67,27 +87,33 @@ const AcdAddFlight = () => {
           <thead>
             <tr>
               <th>#</th>
-              <th>Flight no.</th>
-              <th>Source</th>
-              <th>Destination</th>
+              <th>Flight Number</th>
+              <th>Airline</th>
+              <th>From</th>
+              <th>To</th>
               <th>Date</th>
-              <th>Departure time</th>
-              <th>Arrival time</th>
-              <th>Capacity</th>
+              <th>Departure</th>
+              <th>Arrival</th>
+              <th>Available Seats</th>
+              <th>Total Capacity</th>
+              <th>Base Price</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {searchResults.map((flight, index) => (
-              <tr key={flight.id}>
+              <tr key={flight.flight_id}>
                 <td>{index + 1}</td>
-                <td>{flight.id}</td>
-                <td>{flight.departurePlace}</td>
-                <td>{flight.arrivalPlace}</td>
-                <td>{flight.date}</td>
-                <td>{flight.departureTime}</td>
-                <td>{flight.arrivalTime}</td>
-                <td>{flight.capacity}</td>
+                <td>{flight.flight_number}</td>
+                <td>{flight.airline}</td>
+                <td>{flight.departure_country} ({flight.departure_airport})</td>
+                <td>{flight.arrival_country} ({flight.arrival_airport})</td>
+                <td>{flight.departure_date}</td>
+                <td>{flight.departure_time}</td>
+                <td>{flight.arrival_time}</td>
+                <td>{flight.available_seats}</td>
+                <td>{flight.total_capacity}</td>
+                <td>${flight.base_price}</td>
                 <td>{flight.status}</td>
               </tr>
             ))}
@@ -98,86 +124,150 @@ const AcdAddFlight = () => {
         <div className="modal-overlay">
           <div className="modal edit-modal">
             <h3>Add New Flight</h3>
-            <div className="form-group">
-              <label>Flight Number:</label>
-              <input 
-                type="text" 
-                className="form-input"
-                value={addFlight.flightNumber}
-                onChange={(e) => setAddFlight({...addFlight, flightNumber: e.target.value})}
-              />
-            </div>
-            <div className="form-group">
-              <label>Source:</label>
-              <input 
-                type="text" 
-                className="form-input"
-                value={addFlight.departurePlace}
-                onChange={(e) => setAddFlight({...addFlight, departurePlace: e.target.value})}
-              />
-            </div>
-            <div className="form-group">
-              <label>Destination:</label>
-              <input 
-                type="text" 
-                className="form-input"
-                value={addFlight.arrivalPlace}
-                onChange={(e) => setAddFlight({...addFlight, arrivalPlace: e.target.value})}
-              />
-            </div>
-            <div className="form-group">
-              <label>Date:</label>
-              <input 
-                type="date" 
-                className="form-input"
-                value={addFlight.date}
-                onChange={(e) => setAddFlight({...addFlight, date: e.target.value})}
-              />
-            </div>
-            <div className="form-group">
-              <label>Departure Time:</label>
-              <input 
-                type="text" 
-                className="form-input"
-                value={addFlight.departureTime}
-                onChange={(e) => setAddFlight({...addFlight, departureTime: e.target.value})}
-              />
-            </div>
-            <div className="form-group">
-              <label>Arrival Time:</label>
-              <input 
-                type="text" 
-                className="form-input"
-                value={addFlight.arrivalTime}
-                onChange={(e) => setAddFlight({...addFlight, arrivalTime: e.target.value})}
-              />
-            </div>
-            <div className="form-group">
-              <label>Capacity:</label>
-              <input 
-                type="text" 
-                className="form-input"
-                value={addFlight.capacity}
-                onChange={(e) => setAddFlight({...addFlight, capacity: e.target.value})}
-              />
-            </div>
-            <div className="form-group">
-              <label>Status:</label>
-              <input 
-                type="text" 
-                className="form-input"
-                value={addFlight.status}
-                onChange={(e) => setAddFlight({...addFlight, status: e.target.value})}
-              />
-            </div>
-            <div className="modal-actions">
-              <button className="modal-button cancel" onClick={() => setShowEditModal(false)}>
-                Cancel
-              </button>
-              <button className="modal-button confirm">
-                Add
-              </button>
-            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Flight Number:</label>
+                <input 
+                  type="text" 
+                  className="form-input"
+                  value={addFlight.flight_number}
+                  onChange={(e) => setAddFlight({...addFlight, flight_number: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Airline:</label>
+                <input 
+                  type="text" 
+                  className="form-input"
+                  value={addFlight.airline}
+                  onChange={(e) => setAddFlight({...addFlight, airline: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Departure Airport:</label>
+                <input 
+                  type="text" 
+                  className="form-input"
+                  value={addFlight.departure_airport}
+                  onChange={(e) => setAddFlight({...addFlight, departure_airport: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Departure Country:</label>
+                <input 
+                  type="text" 
+                  className="form-input"
+                  value={addFlight.departure_country}
+                  onChange={(e) => setAddFlight({...addFlight, departure_country: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Arrival Airport:</label>
+                <input 
+                  type="text" 
+                  className="form-input"
+                  value={addFlight.arrival_airport}
+                  onChange={(e) => setAddFlight({...addFlight, arrival_airport: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Arrival Country:</label>
+                <input 
+                  type="text" 
+                  className="form-input"
+                  value={addFlight.arrival_country}
+                  onChange={(e) => setAddFlight({...addFlight, arrival_country: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Departure Date:</label>
+                <input 
+                  type="date" 
+                  className="form-input"
+                  value={addFlight.departure_date}
+                  onChange={(e) => setAddFlight({...addFlight, departure_date: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Departure Time:</label>
+                <input 
+                  type="time" 
+                  className="form-input"
+                  value={addFlight.departure_time}
+                  onChange={(e) => setAddFlight({...addFlight, departure_time: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Arrival Time:</label>
+                <input 
+                  type="time" 
+                  className="form-input"
+                  value={addFlight.arrival_time}
+                  onChange={(e) => setAddFlight({...addFlight, arrival_time: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Available Seats:</label>
+                <input 
+                  type="number" 
+                  className="form-input"
+                  value={addFlight.available_seats}
+                  onChange={(e) => setAddFlight({...addFlight, available_seats: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Total Capacity:</label>
+                <input 
+                  type="number" 
+                  className="form-input"
+                  value={addFlight.total_capacity}
+                  onChange={(e) => setAddFlight({...addFlight, total_capacity: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Base Price:</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  className="form-input"
+                  value={addFlight.base_price}
+                  onChange={(e) => setAddFlight({...addFlight, base_price: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Status:</label>
+                <select 
+                  className="form-input"
+                  value={addFlight.status}
+                  onChange={(e) => setAddFlight({...addFlight, status: e.target.value})}
+                  required
+                >
+                  <option value="on-time">On Time</option>
+                  <option value="delayed">Delayed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div className="modal-actions">
+                <button type="button" className="modal-button cancel" onClick={() => setShowEditModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="modal-button confirm">
+                  Add
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
