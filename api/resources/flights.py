@@ -96,7 +96,7 @@ class FlightDetail(MethodView):
         try:
             db.session.delete(flight)
             db.session.commit()
-        except SQLAlchemyError:
+        except SQLAlchemyError as e:
             db.session.rollback()
-            abort(400, message="Something went wrong when deleting the flight.")
-        return {"message": "Flight deleted successfully."}, 200
+            abort(400, message=f"Something went wrong when deleting the flight: {str(e)}")
+        return {"message": "Flight and all associated records deleted successfully."}, 200

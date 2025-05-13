@@ -115,7 +115,7 @@ CREATE TABLE Air_Control_Activity_Log
     activity_timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     flight_id INT NOT NULL,
     PRIMARY KEY (ac_log_id),
-    FOREIGN KEY (flight_id) REFERENCES Flights(flight_id),
+    FOREIGN KEY (flight_id) REFERENCES Flights(flight_id) ON DELETE CASCADE,
     FOREIGN KEY (staff_id) REFERENCES Air_Control_Dep(staff_id)
 );
 
@@ -133,7 +133,7 @@ CREATE TABLE Bookings
     user_id INT NOT NULL,
     PRIMARY KEY (bookings_id),
     FOREIGN KEY (user_id) REFERENCES User(user_id),
-    FOREIGN KEY (flight_id) REFERENCES Flights(flight_id)
+    FOREIGN KEY (flight_id) REFERENCES Flights(flight_id) ON DELETE CASCADE
 );
 
 
@@ -147,7 +147,7 @@ CREATE TABLE Feedback
     user_id INT NOT NULL,
     PRIMARY KEY (feedback_id),
     FOREIGN KEY (user_id) REFERENCES User(user_id),
-    FOREIGN KEY (flight_id) REFERENCES Flights(flight_id)
+    FOREIGN KEY (flight_id) REFERENCES Flights(flight_id) ON DELETE CASCADE
 );
 
 
@@ -169,7 +169,7 @@ CREATE TABLE manages
     flight_id INT NOT NULL,
     PRIMARY KEY (staff_id, flight_id),
     FOREIGN KEY (staff_id) REFERENCES Air_Control_Dep(staff_id),
-    FOREIGN KEY (flight_id) REFERENCES Flights(flight_id)
+    FOREIGN KEY (flight_id) REFERENCES Flights(flight_id) ON DELETE CASCADE
 );
 
 -- Insert sample users
@@ -189,8 +189,8 @@ VALUES
 -- Insert sample flights (created_by is set to 1 as an example)
 INSERT INTO Flights (flight_number, airline, departure_airport, departure_country, arrival_airport, arrival_country, departure_date, departure_time, arrival_time, total_capacity, available_seats, status, base_price, created_by)
 VALUES
-  ('AC123', 'Air Canada', 'JFK', 'Toronto', 'LAX', 'Los Angeles', '2024-04-15', '14:30:00', '17:45:00', 200, 50, 'on-time', 350.00, 1),
-  ('UA456', 'United Airlines', 'LAX', 'Los Angeles', 'ORD', 'Chicago', '2024-04-16', '09:15:00', '14:30:00', 180, 20, 'delayed', 400.00, 1);
+  ('AC123', 'Air Canada', 'JFK', 'Toronto', 'LAX', 'Los Angeles', '2025-04-15', '14:30:00', '17:45:00', 200, 50, 'on-time', 350.00, 1),
+  ('UA456', 'United Airlines', 'LAX', 'Los Angeles', 'ORD', 'Chicago', '2025-04-16', '09:15:00', '14:30:00', 180, 20, 'delayed', 400.00, 1);
 
 -- Insert sample admin users
 -- For admin1: original password is "admin1"

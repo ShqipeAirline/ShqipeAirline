@@ -18,7 +18,7 @@ class Flight(db.Model):
     base_price = db.Column(db.Numeric(10, 2), nullable=False)  # Base price for economy class
     created_by = db.Column(db.Integer, nullable=True, default=1)  # Default to user ID 1 (admin)
 
-    # Relationships
-    bookings = db.relationship('Booking', backref='flight', lazy=True)
-    feedbacks = db.relationship('Feedback', backref='flight', lazy=True)
-    activity_logs = db.relationship('AirControlActivityLog', backref='flight', lazy=True)
+    # Relationships with cascade delete
+    bookings = db.relationship('Booking', backref='flight', lazy=True, cascade='all, delete-orphan')
+    feedbacks = db.relationship('Feedback', backref='flight', lazy=True, cascade='all, delete-orphan')
+    activity_logs = db.relationship('AirControlActivityLog', backref='flight', lazy=True, cascade='all, delete-orphan')

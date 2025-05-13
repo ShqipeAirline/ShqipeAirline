@@ -125,11 +125,11 @@ const AcdAddFlight = () => {
           <div className="modal edit-modal">
             <h3>Add New Flight</h3>
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Flight Number:</label>
-                <input 
-                  type="text" 
-                  className="form-input"
+            <div className="form-group">
+              <label>Flight Number:</label>
+              <input 
+                type="text" 
+                className="form-input"
                   value={addFlight.flight_number}
                   onChange={(e) => setAddFlight({...addFlight, flight_number: e.target.value})}
                   required
@@ -163,51 +163,51 @@ const AcdAddFlight = () => {
                   value={addFlight.departure_country}
                   onChange={(e) => setAddFlight({...addFlight, departure_country: e.target.value})}
                   required
-                />
-              </div>
-              <div className="form-group">
+              />
+            </div>
+            <div className="form-group">
                 <label>Arrival Airport:</label>
-                <input 
-                  type="text" 
-                  className="form-input"
+              <input 
+                type="text" 
+                className="form-input"
                   value={addFlight.arrival_airport}
                   onChange={(e) => setAddFlight({...addFlight, arrival_airport: e.target.value})}
                   required
-                />
-              </div>
-              <div className="form-group">
+              />
+            </div>
+            <div className="form-group">
                 <label>Arrival Country:</label>
-                <input 
-                  type="text" 
-                  className="form-input"
+              <input 
+                type="text" 
+                className="form-input"
                   value={addFlight.arrival_country}
                   onChange={(e) => setAddFlight({...addFlight, arrival_country: e.target.value})}
                   required
-                />
-              </div>
-              <div className="form-group">
+              />
+            </div>
+            <div className="form-group">
                 <label>Departure Date:</label>
-                <input 
-                  type="date" 
-                  className="form-input"
+              <input 
+                type="date" 
+                className="form-input"
                   value={addFlight.departure_date}
                   onChange={(e) => setAddFlight({...addFlight, departure_date: e.target.value})}
                   required
-                />
-              </div>
-              <div className="form-group">
-                <label>Departure Time:</label>
-                <input 
+              />
+            </div>
+            <div className="form-group">
+              <label>Departure Time:</label>
+              <input 
                   type="time" 
-                  className="form-input"
+                className="form-input"
                   value={addFlight.departure_time}
                   onChange={(e) => setAddFlight({...addFlight, departure_time: e.target.value})}
                   required
-                />
-              </div>
-              <div className="form-group">
-                <label>Arrival Time:</label>
-                <input 
+              />
+            </div>
+            <div className="form-group">
+              <label>Arrival Time:</label>
+              <input 
                   type="time" 
                   className="form-input"
                   value={addFlight.arrival_time}
@@ -229,44 +229,44 @@ const AcdAddFlight = () => {
                 <label>Total Capacity:</label>
                 <input 
                   type="number" 
-                  className="form-input"
+                className="form-input"
                   value={addFlight.total_capacity}
                   onChange={(e) => setAddFlight({...addFlight, total_capacity: e.target.value})}
                   required
-                />
-              </div>
-              <div className="form-group">
+              />
+            </div>
+            <div className="form-group">
                 <label>Base Price:</label>
-                <input 
+              <input 
                   type="number" 
                   step="0.01"
-                  className="form-input"
+                className="form-input"
                   value={addFlight.base_price}
                   onChange={(e) => setAddFlight({...addFlight, base_price: e.target.value})}
                   required
-                />
-              </div>
-              <div className="form-group">
-                <label>Status:</label>
+              />
+            </div>
+            <div className="form-group">
+              <label>Status:</label>
                 <select 
-                  className="form-input"
-                  value={addFlight.status}
-                  onChange={(e) => setAddFlight({...addFlight, status: e.target.value})}
+                className="form-input"
+                value={addFlight.status}
+                onChange={(e) => setAddFlight({...addFlight, status: e.target.value})}
                   required
                 >
                   <option value="on-time">On Time</option>
                   <option value="delayed">Delayed</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
-              </div>
-              <div className="modal-actions">
+            </div>
+            <div className="modal-actions">
                 <button type="button" className="modal-button cancel" onClick={() => setShowEditModal(false)}>
-                  Cancel
-                </button>
+                Cancel
+              </button>
                 <button type="submit" className="modal-button confirm">
-                  Add
-                </button>
-              </div>
+                Add
+              </button>
+            </div>
             </form>
           </div>
         </div>
