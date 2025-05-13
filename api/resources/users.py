@@ -194,3 +194,14 @@ class TokenRefresh(MethodView):
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
         return {"access_token": new_token}, 200
+
+@blp.route("/users")
+class UserList(MethodView):
+    @jwt_required()
+    @blp.response(200, PlainUserSchema(many=True))
+    def get(self):
+        try:
+            users = User.query.all()
+            return users
+        except SQLAlchemyError as e:
+            abort(500, message=f"Error fetching users: {str(e)}")

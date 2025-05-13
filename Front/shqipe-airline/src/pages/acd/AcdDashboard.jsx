@@ -54,7 +54,7 @@ const AcdDashboard = () => {
       title: 'View all passenger records',
       description: 'View of the list of passenger that have been registered.',
       icon: <img src={check} alt="check" />,
-      link: '/passenger-records'
+      link: '/acd-dashboard/passenger-records'
     }
   ];
 

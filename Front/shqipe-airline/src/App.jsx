@@ -83,14 +83,14 @@ function App() {
 
         {/*Air Control Department pages*/}
         <Route path="/acd-dashboard" element={
-          <ProtectedRoute allowedRoles={['air control staff']}>
+          <ProtectedRoute allowedRoles={['admin', 'air control staff']}>
             <AcdLayout/>
           </ProtectedRoute>
         }>
           <Route index element={<Dashboard/>} />
           <Route path="schedule" element={<Schedule/>} />
           <Route path="flight-details/:flight_id" element={<FlightDetails/>} />
-          <Route path="passenger-view" element={<AcdPassView/>} />
+          <Route path="passenger-records" element={<AcdPassView/>} />
           <Route path="add-flight" element={<AcdAddFlight/>} />
           <Route path="update-flight" element={<AcdUpdateFlight/>} />
           <Route path="remove-flight" element={<AcdRemoveFlight/>} />
