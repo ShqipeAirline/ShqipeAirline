@@ -92,8 +92,8 @@ def get_identity(user):
         return str(user.user_id)
     elif hasattr(user, "admin_id"):
         return str(user.admin_id)
-    elif hasattr(user, "air_control_id"):
-        return str(user.air_control_id)
+    elif hasattr(user, "staff_id"):
+        return str(user.staff_id)
     return None
 
 @blp.route("/login")
@@ -134,9 +134,16 @@ class UserLogin(MethodView):
                 "role": role,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
-                "email": user.email,
-                "user_id": user.user_id
+                "email": user.email
             }
+            
+            # Add the correct ID field based on user type
+            if role == "admin":
+                additional_claims["user_id"] = user.admin_id
+            elif role == "air control staff":
+                additional_claims["user_id"] = user.staff_id
+            else:
+                additional_claims["user_id"] = user.user_id
             
             print(f"Additional claims: {additional_claims}")  # Debug log
             
