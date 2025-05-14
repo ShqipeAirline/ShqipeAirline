@@ -32,6 +32,12 @@ const AdminLayout = () => {
            User Account Management
           </Link>
           <Link 
+            to="/admin-dashboard/admin-feedback" 
+            className={`sidebar-item ${currentPath === '/admin-dashboard/admin-feedback' ? 'active' : ''}`}
+          >
+            Feedback Management
+          </Link>
+          <Link 
             to="/admin-dashboard/admin-reports" 
             className={`sidebar-item ${currentPath === '/admin-dashboard/admin-reports' ? 'active' : ''}`}
           >

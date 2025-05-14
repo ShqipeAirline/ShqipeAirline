@@ -304,4 +304,40 @@ table {
   color: #666;
   font-size: 14px;
 }
+
+.star-rating {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.star-filled {
+  color: #FFD700;
+}
+
+.star-empty {
+  color: #ccc;
+}
+
+.feedback-manage {
+  padding: 20px;
+}
+
+.feedback-manage table td {
+  vertical-align: middle;
+}
+
+.feedback-manage .star-rating {
+  justify-content: center;
+}
+
+.feedback-manage table td:nth-child(4) {
+  text-align: center;
+}
+
+.feedback-manage table td:nth-child(5) {
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+}
   

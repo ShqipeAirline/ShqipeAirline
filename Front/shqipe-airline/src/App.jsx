@@ -25,6 +25,7 @@ import AdminTransactions from './admin/AdminTransactions'
 import AirCraftDetails from './landingpages/AirCraftDetails';
 import UserManage from './admin/Usermanage'
 import AdminReports from './admin/AdminReports'
+import FeedbackManage from './admin/FeedbackManage'
 import PassengerDashboard from './pages/passenger/PassengerDashboard';
 import PassagerLayout from './layouts/PassagerLayout'
 import Profile from './passanger/Profile'
@@ -64,6 +65,7 @@ function App() {
           <Route index element={<AdminDashboard/>} />
           <Route path="admin-transaction" element={<AdminTransactions/>}/>
           <Route path="admin-user-management" element={<UserManage/>}/>
+          <Route path="admin-feedback" element={<FeedbackManage/>}/>
           <Route path="admin-reports" element={<AdminReports/>}/>
         </Route>
         
