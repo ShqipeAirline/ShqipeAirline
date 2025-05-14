@@ -1,173 +1,233 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./TransactionStyles.css";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaPencilAlt, FaTrash, FaPlus, FaSearch } from "react-icons/fa";
+import api from '../api/axios';
 
-const initialUsers = [
-  {
-    firstName: "Paris",
-    lastName: "Milton",
-    birthday: "1992-03-15",
-    gender: "Female",
-    email: "paris.milton@example.com",
-    password: "pMilton92",
-    status: "Passenger",
+const roleOptions = ["Passenger", "Admin", "AirControl Dept"];
+
+const roleMapping = {
+  "Passenger": "user",
+  "Admin": "admin",
+  "AirControl Dept": "air control staff"
+};
+
+const roleEndpoints = {
+  "user": {
+    get: '/users',
+    post: '/users',
+    delete: (id) => `/user/${id}`,
+    idField: 'user_id',
   },
-  {
-    firstName: "Elena",
-    lastName: "Winston",
-    birthday: "1988-10-22",
-    gender: "Female",
-    email: "elena.winston@example.com",
-    password: "elenaWin88",
-    status: "Passenger",
+  "admin": {
+    get: '/admin',
+    post: '/admin',
+    delete: (id) => `/admin/${id}`,
+    idField: 'admin_id',
   },
-  {
-    firstName: "Roger",
-    lastName: "Piston",
-    birthday: "1979-04-12",
-    gender: "Male",
-    email: "roger.piston@example.com",
-    password: "rogerP79",
-    status: "Admin",
+  "air control staff": {
+    get: '/aircontrol',
+    post: '/aircontrol',
+    delete: (id) => `/aircontrol/${id}`,
+    idField: 'staff_id',
   },
-  {
-    firstName: "Paula",
-    lastName: "Ortega",
-    birthday: "1990-08-09",
-    gender: "Female",
-    email: "paula.ortega@example.com",
-    password: "paulaO90",
-    status: "Passenger",
-  },
-  {
-    firstName: "Jackie",
-    lastName: "Long",
-    birthday: "1985-12-17",
-    gender: "Female",
-    email: "jackie.long@example.com",
-    password: "jackieL85",
-    status: "AirControl Dept",
-  },
-  {
-    firstName: "Oscar",
-    lastName: "Bolster",
-    birthday: "1993-11-03",
-    gender: "Male",
-    email: "oscar.bolster@example.com",
-    password: "oscarB93",
-    status: "Passenger",
-  },
-  {
-    firstName: "Yuri",
-    lastName: "Wakamura",
-    birthday: "1996-06-27",
-    gender: "Male",
-    email: "yuri.wakamura@example.com",
-    password: "yuriW96",
-    status: "Admin",
-  },
-  {
-    firstName: "Santo",
-    lastName: "Reagan",
-    birthday: "1987-01-15",
-    gender: "Male",
-    email: "santo.reagan@example.com",
-    password: "santoR87",
-    status: "AirControl Dept",
-  },
-  {
-    firstName: "Vicky",
-    lastName: "Wisteria",
-    birthday: "1991-09-11",
-    gender: "Female",
-    email: "vicky.wisteria@example.com",
-    password: "vickyW91",
-    status: "Passenger",
-  },
-  {
-    firstName: "Adam",
-    lastName: "Stewart",
-    birthday: "1983-05-06",
-    gender: "Male",
-    email: "adam.stewart@example.com",
-    password: "adamS83",
-    status: "Admin",
-  },
-  {
-    firstName: "Marcus",
-    lastName: "Levin",
-    birthday: "1994-02-19",
-    gender: "Male",
-    email: "marcus.levin@example.com",
-    password: "marcusL94",
-    status: "Passenger",
-  },
-  {
-    firstName: "Lindsey",
-    lastName: "Carder",
-    birthday: "1997-07-08",
-    gender: "Female",
-    email: "lindsey.carder@example.com",
-    password: "lindseyC97",
-    status: "AirControl Dept",
-  },
-];
+};
 
 export default function UserManage() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editUser, setEditUser] = useState(null);
-  const [editIndex, setEditIndex] = useState(null);
+  const [isAdd, setIsAdd] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const openModal = (user, index) => {
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
+
+  useEffect(() => {
+    const filtered = users.filter(user =>
+      (user.first_name || user.firstName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.last_name || user.lastName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.email || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.role || user.status || "").toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  }, [searchTerm, users]);
+
+  const fetchAllUsers = async () => {
+    try {
+      const all = [];
+      for (const role of roleOptions) {
+        const res = await api.get(roleEndpoints[roleMapping[role]].get);
+        const data = res.data.map(u => {
+          // Map the role from the database to the display role
+          let displayRole = u.role;
+          if (u.role === 'air control staff') {
+            displayRole = 'AirControl Dept';
+          } else if (u.role === 'admin') {
+            displayRole = 'Admin';
+          } else if (u.role === 'user') {
+            displayRole = 'Passenger';
+          }
+          return { ...u, role: displayRole };
+        });
+        all.push(...data);
+      }
+      setUsers(all);
+      setFilteredUsers(all);
+    } catch {
+      alert("Failed to fetch users");
+    }
+  };
+
+  const openModal = (user) => {
     setEditUser({ ...user });
-    setEditIndex(index);
+    setIsAdd(false);
     setModalOpen(true);
   };
 
-  const handleUpdate = () => {
-    const updatedUsers = [...users];
-    updatedUsers[editIndex] = editUser;
-    setUsers(updatedUsers);
-    setModalOpen(false);
+  const openAddModal = () => {
+    setEditUser({
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      birthday: "",
+      gender: "Male",
+      role: "user"
+    });
+    setIsAdd(true);
+    setModalOpen(true);
   };
 
-  const handleDelete = () => {
-    const updatedUsers = users.filter((_, idx) => idx !== editIndex);
-    setUsers(updatedUsers);
-    setModalOpen(false);
+  const handleUpdate = async () => {
+    try {
+      const id = editUser.user_id;
+      // Map the display role back to database role
+      let dbRole = editUser.role;
+      if (editUser.role === 'AirControl Dept') {
+        dbRole = 'air control staff';
+      } else if (editUser.role === 'Admin') {
+        dbRole = 'admin';
+      } else if (editUser.role === 'Passenger') {
+        dbRole = 'user';
+      }
+
+      const payload = {
+        email: editUser.email,
+        first_name: editUser.first_name,
+        last_name: editUser.last_name,
+        role: dbRole,
+        phone_number: editUser.phone_number,
+        date_of_birth: editUser.date_of_birth
+      };
+      
+      if (editUser.password) {
+        payload.password = editUser.password;
+      }
+
+      // Remove undefined or empty fields
+      Object.keys(payload).forEach(key => {
+        if (payload[key] === undefined || payload[key] === "") {
+          delete payload[key];
+        }
+      });
+
+      await api.put(`/user/${id}`, payload);
+      setModalOpen(false);
+      fetchAllUsers();
+    } catch (error) {
+      console.log('Update user error:', JSON.stringify(error.response?.data, null, 2));
+      alert(error.response?.data?.message || "Failed to update user");
+    }
+  };
+
+  const handleAdd = async () => {
+    try {
+      const displayRole = editUser.role;
+      const dbRole = roleMapping[displayRole];
+      const endpoint = roleEndpoints[dbRole].post;
+      const payload = {
+        email: editUser.email,
+        password: editUser.password,
+        first_name: editUser.first_name,
+        last_name: editUser.last_name,
+        username: editUser.email.split('@')[0],
+        role: dbRole
+      };
+      // Remove undefined or empty fields
+      Object.keys(payload).forEach(key => {
+        if (payload[key] === undefined || payload[key] === "") {
+          delete payload[key];
+        }
+      });
+      await api.post(endpoint, payload);
+      setModalOpen(false);
+      fetchAllUsers();
+    } catch (error) {
+      console.log('Add user error:', JSON.stringify(error.response?.data, null, 2));
+      alert(error.response?.data?.message || "Failed to add user");
+    }
+  };
+
+  const handleDelete = async (user) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    try {
+      const role = user.role || user.status;
+      const idField = roleEndpoints[role].idField;
+      const id = user[idField];
+      await api.delete(roleEndpoints[role].delete(id));
+      fetchAllUsers();
+    } catch (error) {
+      console.log('Delete user error:', JSON.stringify(error.response?.data, null, 2));
+      alert("Failed to delete user");
+    }
   };
 
   return (
     <div className="user-manage">
       <h1 className="text-2xl font-bold mb-4">User Management</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+        <div className="search-container">
+          <div className="search-box">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search users..."
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+        </div>
+        <button className="add-user-btn" onClick={openAddModal} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <FaPlus /> Add User
+        </button>
+      </div>
       <div className="table-container-admin">
         <table>
           <thead>
             <tr>
               <th>First Name</th>
               <th>Last Name</th>
-              <th>Birthday</th>
-              <th>Gender</th>
               <th>Email</th>
-              <th>Password</th>
-              <th>Status</th>
+              <th>Role</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user, idx) => (
+            {filteredUsers.map((user, idx) => (
               <tr key={idx}>
-                <td>{user.firstName}</td>
-                <td>{user.lastName}</td>
-                <td>{user.birthday}</td>
-                <td>{user.gender}</td>
+                <td>{user.first_name || user.firstName}</td>
+                <td>{user.last_name || user.lastName}</td>
                 <td>{user.email}</td>
-                <td>{"•".repeat(user.password.length)}</td>
-                <td>{user.status}</td>
+                <td>{user.role || user.status}</td>
                 <td>
-                  <button className="edit-btn" onClick={() => openModal(user, idx)}>
+                  <button className="edit-btn" onClick={() => openModal(user)}>
                     <FaPencilAlt />
+                  </button>
+                  <button className="transaction-delete-button" onClick={() => handleDelete(user)} title="Delete User">
+                    <FaTrash />
                   </button>
                 </td>
               </tr>
@@ -175,63 +235,63 @@ export default function UserManage() {
           </tbody>
         </table>
       </div>
-
       {modalOpen && (
-        <div className="modal-overlay"> {/* Modal background */}
-          <div className="modal-content"> {/* Modal content */}
-            <h2>Edit User</h2>
-            <form>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>{isAdd ? "Add User" : "Edit User"}</h2>
+            <form onSubmit={e => { e.preventDefault(); isAdd ? handleAdd() : handleUpdate(); }}>
               <input
                 type="text"
-                value={editUser.firstName}
-                onChange={(e) => setEditUser({ ...editUser, firstName: e.target.value })}
+                value={editUser.first_name || editUser.firstName || ''}
+                onChange={e => setEditUser({ ...editUser, first_name: e.target.value })}
                 placeholder="First Name"
+                required
               />
               <input
                 type="text"
-                value={editUser.lastName}
-                onChange={(e) => setEditUser({ ...editUser, lastName: e.target.value })}
+                value={editUser.last_name || editUser.lastName || ''}
+                onChange={e => setEditUser({ ...editUser, last_name: e.target.value })}
                 placeholder="Last Name"
+                required
               />
-              <input
-                type="date"
-                value={editUser.birthday}
-                onChange={(e) => setEditUser({ ...editUser, birthday: e.target.value })}
-              />
-              <select
-                value={editUser.gender}
-                onChange={(e) => setEditUser({ ...editUser, gender: e.target.value })}
-              >
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-              </select>
               <input
                 type="email"
                 value={editUser.email}
-                onChange={(e) => setEditUser({ ...editUser, email: e.target.value })}
+                onChange={e => setEditUser({ ...editUser, email: e.target.value })}
                 placeholder="Email"
+                required
               />
               <input
                 type="password"
                 value={editUser.password}
-                onChange={(e) => setEditUser({ ...editUser, password: e.target.value })}
+                onChange={e => setEditUser({ ...editUser, password: e.target.value })}
                 placeholder="Password"
+                required={isAdd}
               />
               <select
-                value={editUser.status}
-                onChange={(e) => setEditUser({ ...editUser, status: e.target.value })}
+                value={editUser.role}
+                onChange={e => setEditUser({ ...editUser, role: e.target.value })}
+                required
               >
-                <option>Passenger</option>
-                <option>Admin</option>
-                <option>AirControl Dept</option>
+                {roleOptions.map(role => (
+                  <option key={role} value={role}>{role}</option>
+                ))}
               </select>
+              <input
+                type="text"
+                value={editUser.phone_number || ''}
+                onChange={e => setEditUser({ ...editUser, phone_number: e.target.value })}
+                placeholder="Phone Number"
+              />
+              <input
+                type="date"
+                value={editUser.date_of_birth || ''}
+                onChange={e => setEditUser({ ...editUser, date_of_birth: e.target.value })}
+                placeholder="Date of Birth"
+              />
+              <button type="submit" className="btn-update">{isAdd ? "Add" : "Update"}</button>
+              <button type="button" onClick={() => setModalOpen(false)} className="btn-cancel">Cancel</button>
             </form>
-            <div className="modal-buttons">
-              <button onClick={handleUpdate} className="btn-update">Update</button>
-              <button onClick={handleDelete} className="btn-delete">Remove</button>
-              <button onClick={() => setModalOpen(false)} className="btn-cancel">Cancel</button>
-            </div>
           </div>
         </div>
       )}

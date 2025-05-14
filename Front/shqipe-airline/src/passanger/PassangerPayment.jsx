@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './PassangerPayment.css';
+import api from '../api/axios';
+import useUserStore from '../store/userStore';
 
 const PassengerPayment = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useUserStore();
+  const { booking, flight, priceBreakdown } = location.state || {};
+
   const [selectedMethod, setSelectedMethod] = useState('credit');
-  const [formData, setFormData] = useState({
+  const [paymentFormData, setPaymentFormData] = useState({
     cardOwner: '',
     cardNumber: '',
     expirationMonth: '',
@@ -15,72 +23,94 @@ const PassengerPayment = () => {
     netbankingUsername: '',
     netbankingPassword: '',
   });
-  const [errors, setErrors] = useState({
-    cardNumber: '',
-    expirationMonth: '',
-    expirationYear: '',
-    cvv: '',
-  });
-  const [isValid, setIsValid] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (selectedMethod === 'credit' && validateCardForm()) {
-      alert(`Payment confirmed using ${selectedMethod}!`);
-      setFormData({
-        cardOwner: '',
-        cardNumber: '',
-        expirationMonth: '',
-        expirationYear: '',
-        cvv: '',
-        paypalEmail: '',
-        paypalPassword: '',
-        netbankingBank: '',
-        netbankingUsername: '',
-        netbankingPassword: '',
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (selectedMethod === 'credit' && !validateCardForm()) {
+        return;
+      }
+
+      // First, create a payment method
+      const paymentMethodData = {
+        user_id: user.user_id,
+        payment_type: selectedMethod,
+        payment_token: 'dummy_token', // In a real app, this would be a secure token from a payment processor
+        card_last_four: paymentFormData.cardNumber.slice(-4),
+        card_brand: 'Visa', // This would be determined by the card number in a real app
+        expiration_month: parseInt(paymentFormData.expirationMonth),
+        expiration_year: parseInt(paymentFormData.expirationYear),
+        is_default: 1
+      };
+
+      const paymentMethodResponse = await api.post(`/user/${user.user_id}/payment_methods`, paymentMethodData);
+
+      // Then create the transaction
+      const transactionData = {
+        booking_id: booking.bookings_id,
+        amount: priceBreakdown.total.toString(),
+        transaction_status: 'pending',
+        payment_method_id: paymentMethodResponse.data.payment_method_id
+      };
+
+      await api.post(`/user/${user.user_id}/payment_methods/${paymentMethodResponse.data.payment_method_id}/transactions`, transactionData);
+
+      // Update booking status to pending
+      await api.put(`/user/${user.user_id}/bookings/${booking.bookings_id}`, {
+        flight_id: booking.flight_id,
+        seat_number: booking.seat_number,
+        extra_baggage: booking.extra_baggage,
+        travel_insurance: booking.travel_insurance,
+        total_price: booking.total_price,
+        booking_status: 'pending'
       });
-    } else if (selectedMethod !== 'credit') {
-      alert(`Payment confirmed using ${selectedMethod}!`);
-      setFormData({
-        ...formData,
+
+      navigate('/passenger-dashboard', { 
+        state: { 
+          message: 'Payment submitted! Your booking is pending confirmation.',
+          type: 'info'
+        }
       });
+    } catch (err) {
+      console.error('Error processing payment:', err);
+      setError(err.response?.data?.message || 'Failed to process payment. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   const validateCardForm = () => {
     let isValid = true;
-    let newErrors = {};
 
     const cardNumberPattern = /^[0-9]{13,19}$/;
-    if (!cardNumberPattern.test(formData.cardNumber.replace(/\s/g, ''))) {
-      newErrors.cardNumber = 'Card number must be between 13 and 19 digits';
+    if (!cardNumberPattern.test(paymentFormData.cardNumber.replace(/\s/g, ''))) {
       alert('Card number must be between 13 and 19 digits');
       isValid = false;
     }
 
-    if (formData.expirationMonth < 1 || formData.expirationMonth > 12) {
-      newErrors.expirationMonth = 'Expiration month must be between 1 and 12';
+    if (paymentFormData.expirationMonth < 1 || paymentFormData.expirationMonth > 12) {
       alert('Expiration month must be between 1 and 12');
       isValid = false;
     }
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
-    if (formData.expirationYear < currentYear || 
-        (formData.expirationYear === currentYear && formData.expirationMonth < currentMonth)) {
-      newErrors.expirationYear = 'Card is expired';
+    if (paymentFormData.expirationYear < currentYear || 
+        (paymentFormData.expirationYear === currentYear && paymentFormData.expirationMonth < currentMonth)) {
       alert('Card is expired');
       isValid = false;
     }
 
-    if (formData.cvv.length !== 3) {
-      newErrors.cvv = 'CVV must be 3 digits';
+    if (paymentFormData.cvv.length !== 3) {
       alert('CVV must be 3 digits');
       isValid = false;
     }
 
-    setErrors(newErrors);
-    setIsValid(isValid);
     return isValid;
   };
 
@@ -90,12 +120,12 @@ const PassengerPayment = () => {
     if (name === 'cardNumber') {
       // Remove all non-digit characters, then add spaces after every four digits
       const formattedCardNumber = value.replace(/\D/g, '').replace(/(\d{4})(?=\d)/g, '$1 ');
-      setFormData((prevData) => ({
+      setPaymentFormData((prevData) => ({
         ...prevData,
         [name]: formattedCardNumber,
       }));
     } else {
-      setFormData((prevData) => ({
+      setPaymentFormData((prevData) => ({
         ...prevData,
         [name]: value,
       }));
@@ -104,6 +134,13 @@ const PassengerPayment = () => {
 
   return (
     <div className="payment-container">
+      <h2>Payment Details</h2>
+      {error && <div className="payment-error">{error}</div>}
+      <div className="payment-summary">
+        <h3>Payment Summary</h3>
+        <p><strong>Flight:</strong> {flight.airline} from {flight.departure_airport} to {flight.arrival_airport}</p>
+        <p><strong>Total Amount:</strong> ${priceBreakdown.total.toFixed(2)}</p>
+      </div>
       <div className="payment-tabs">
         <button
           className={`tab ${selectedMethod === 'credit' ? 'active' : ''}`}
@@ -133,7 +170,7 @@ const PassengerPayment = () => {
               <input
                 type="text"
                 name="cardOwner"
-                value={formData.cardOwner}
+                value={paymentFormData.cardOwner}
                 onChange={handleInputChange}
                 placeholder="Card Owner Name"
                 required
@@ -144,7 +181,7 @@ const PassengerPayment = () => {
               <input
                 type="text"
                 name="cardNumber"
-                value={formData.cardNumber}
+                value={paymentFormData.cardNumber}
                 onChange={handleInputChange}
                 placeholder="Valid card number"
                 required
@@ -157,7 +194,7 @@ const PassengerPayment = () => {
                   <input
                     type="text"
                     name="expirationMonth"
-                    value={formData.expirationMonth}
+                    value={paymentFormData.expirationMonth}
                     onChange={handleInputChange}
                     placeholder="MM"
                     required
@@ -165,7 +202,7 @@ const PassengerPayment = () => {
                   <input
                     type="text"
                     name="expirationYear"
-                    value={formData.expirationYear}
+                    value={paymentFormData.expirationYear}
                     onChange={handleInputChange}
                     placeholder="YY"
                     required
@@ -177,7 +214,7 @@ const PassengerPayment = () => {
                 <input
                   type="text"
                   name="cvv"
-                  value={formData.cvv}
+                  value={paymentFormData.cvv}
                   onChange={handleInputChange}
                   placeholder="CVV"
                   required
@@ -194,7 +231,7 @@ const PassengerPayment = () => {
               <input
                 type="email"
                 name="paypalEmail"
-                value={formData.paypalEmail}
+                value={paymentFormData.paypalEmail}
                 onChange={handleInputChange}
                 placeholder="your-email@paypal.com"
                 required
@@ -205,7 +242,7 @@ const PassengerPayment = () => {
               <input
                 type="password"
                 name="paypalPassword"
-                value={formData.paypalPassword}
+                value={paymentFormData.paypalPassword}
                 onChange={handleInputChange}
                 placeholder="Enter PayPal password"
                 required
@@ -220,7 +257,7 @@ const PassengerPayment = () => {
               <label>Select Bank</label>
               <select
                 name="netbankingBank"
-                value={formData.netbankingBank}
+                value={paymentFormData.netbankingBank}
                 onChange={handleInputChange}
                 required
               >
@@ -236,7 +273,7 @@ const PassengerPayment = () => {
               <input
                 type="text"
                 name="netbankingUsername"
-                value={formData.netbankingUsername}
+                value={paymentFormData.netbankingUsername}
                 onChange={handleInputChange}
                 placeholder="Net banking username"
                 required
@@ -247,7 +284,7 @@ const PassengerPayment = () => {
               <input
                 type="password"
                 name="netbankingPassword"
-                value={formData.netbankingPassword}
+                value={paymentFormData.netbankingPassword}
                 onChange={handleInputChange}
                 placeholder="Net banking password"
                 required
@@ -256,8 +293,8 @@ const PassengerPayment = () => {
           </>
         )}
 
-        <button type="submit" className="confirm-btn">
-          Confirm Payment
+        <button type="submit" className="confirm-btn" disabled={loading}>
+          {loading ? 'Processing...' : 'Confirm Payment'}
         </button>
       </form>
     </div>

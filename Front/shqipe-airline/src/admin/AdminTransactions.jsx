@@ -1,42 +1,139 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./TransactionStyles.css";
-
-const initialTransactions = [
-  { name: "Paris Milton", bookingCode: "CN-KL2345", airline: "Shaqipe Airlines", route: "CDG-JFK", billingDate: "2025-07-01", amount: "$500.00", status: "Confirmed" },
-  { name: "Elena Winston", bookingCode: "QW-MN6789", airline: "Shaqipe Airlines", route: "HKG-LAX", billingDate: "2025-07-01", amount: "$750.00", status: "Pending" },
-  { name: "Roger Piston", bookingCode: "SH-OP3456", airline: "Shaqipe Airlines", route: "FRA-BKK", billingDate: "2025-07-01", amount: "$650.00", status: "Confirmed" },
-  { name: "Paula Ortega", bookingCode: "FF-QR7890", airline: "Shaqipe Airways", route: "LAX-HND", billingDate: "2025-07-01", amount: "$800.00", status: "Cancelled" },
-  { name: "Jackie Long", bookingCode: "AJ-ST0123", airline: "Shaqipe Airlines", route: "SIN-LHR", billingDate: "2025-07-01", amount: "$900.00", status: "Confirmed" },
-  { name: "Oscar Bolster", bookingCode: "SH-AB1234", airline: "Shaqipe Airlines", route: "NYC-LAX", billingDate: "2025-07-01", amount: "$350.00", status: "Confirmed" },
-  { name: "Yuri Wakamura", bookingCode: "FF-CD5678", airline: "Shaqipe Airline", route: "LHR-JFK", billingDate: "2025-07-01", amount: "$450.00", status: "Pending" },
-  { name: "Santo Reagan", bookingCode: "AJ-EF9101", airline: "Shaqipe Airlines", route: "HND-SFO", billingDate: "2025-07-01", amount: "$700.00", status: "Confirmed" },
-  { name: "Vicky Wisteria", bookingCode: "NA-GH2345", airline: "Shaqipe Airlines", route: "SYD-SIN", billingDate: "2025-07-01", amount: "$400.00", status: "Cancelled" },
-  { name: "Adam Stewart", bookingCode: "JS-UI6789", airline: "Shaqipe Airlines", route: "DXB-LHR", billingDate: "2025-07-01", amount: "$600.00", status: "Confirmed" },
-  { name: "Marcus Levin", bookingCode: "FF-MN5678", airline: "Shaqipe Airlines", route: "LAX-HND", billingDate: "2025-07-01", amount: "$900.00", status: "Pending" },
-  { name: "Lindsey Carder", bookingCode: "AJ-WX3456", airline: "Shaqipe Airlines", route: "SIN-FRA", billingDate: "2025-07-01", amount: "$750.00", status: "Confirmed" },
-];
+import api from '../api/axios';
+import { FaTrash, FaSearch } from 'react-icons/fa';
 
 const getStatusClass = (status) => {
   switch (status) {
-    case "Confirmed": return "badge badge-confirmed";
-    case "Pending": return "badge badge-pending";
-    case "Cancelled": return "badge badge-cancelled";
+    case "completed": return "badge badge-confirmed";
+    case "pending": return "badge badge-pending";
+    case "cancelled": return "badge badge-cancelled";
     default: return "badge";
   }
 };
 
 export default function AdminTransactions() {
-  const [transactions, setTransactions] = useState(initialTransactions);
+  const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleStatusChange = (index, newStatus) => {
-    const updated = [...transactions];
-    updated[index].status = newStatus;
-    setTransactions(updated);
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  useEffect(() => {
+    // Filter transactions based on search term
+    const filtered = transactions.filter(tx => 
+      tx.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tx.booking_code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tx.airline.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tx.route.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tx.amount.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tx.status.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredTransactions(filtered);
+  }, [searchTerm, transactions]);
+
+  const fetchTransactions = async () => {
+    try {
+      const response = await api.get('/admin/transactions');
+      setTransactions(response.data);
+      setFilteredTransactions(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching transactions:', err);
+      setError(err.response?.data?.message || 'Failed to load transactions');
+      setLoading(false);
+    }
   };
+
+  const handleStatusChange = async (transactionId, newStatus) => {
+    try {
+      // Update transaction status
+      await api.put('/admin/transactions', {
+        transaction_id: transactionId,
+        status: newStatus
+      });
+      
+      // Find the transaction to get the booking ID
+      const transaction = transactions.find(tx => tx.transaction_id === transactionId);
+      if (transaction) {
+        // Extract booking ID from booking code (format: BK-XXXXXX)
+        const bookingId = parseInt(transaction.booking_code.split('-')[1]);
+        
+        // Update booking status based on transaction status
+        const bookingStatus = newStatus === 'completed' ? 'confirmed' : 
+                            newStatus === 'cancelled' ? 'cancelled' : 'pending';
+        
+        try {
+          await api.put(`/admin/bookings/${bookingId}`, {
+            booking_status: bookingStatus
+          });
+        } catch (bookingErr) {
+          console.error('Error updating booking status:', bookingErr);
+          // Continue with transaction update even if booking update fails
+        }
+      }
+      
+      // Update local state
+      setTransactions(prevTransactions => 
+        prevTransactions.map(tx => 
+          tx.transaction_id === transactionId 
+            ? { ...tx, status: newStatus }
+            : tx
+        )
+      );
+    } catch (err) {
+      console.error('Error updating transaction status:', err);
+      alert(err.response?.data?.message || 'Failed to update transaction status');
+    }
+  };
+
+  const handleDelete = async (transactionId) => {
+    if (window.confirm('Are you sure you want to delete this transaction?')) {
+      try {
+        await api.delete(`/admin/transactions/${transactionId}`);
+        // Update local state
+        setTransactions(prevTransactions => 
+          prevTransactions.filter(tx => tx.transaction_id !== transactionId)
+        );
+        setFilteredTransactions(prevTransactions => 
+          prevTransactions.filter(tx => tx.transaction_id !== transactionId)
+        );
+      } catch (err) {
+        console.error('Error deleting transaction:', err);
+        alert(err.response?.data?.message || 'Failed to delete transaction');
+      }
+    }
+  };
+
+  if (loading) {
+    return <div className="transaction">Loading transactions...</div>;
+  }
+
+  if (error) {
+    return <div className="transaction">Error: {error}</div>;
+  }
 
   return (
     <div className="transaction">
       <h1 className="text-2xl font-bold mb-4">Transactions</h1>
+      
+      <div className="search-container">
+        <div className="search-box">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search transactions..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+      </div>
+
       <div className="table-container-admin">
         <table>
           <thead>
@@ -49,32 +146,39 @@ export default function AdminTransactions() {
               <th>Amount</th>
               <th>Status</th>
               <th>Change Status</th>
-              
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {transactions.map((tx, idx) => (
-              <tr key={idx}>
+            {filteredTransactions.map((tx) => (
+              <tr key={tx.transaction_id}>
                 <td>{tx.name}</td>
-                <td>{tx.bookingCode}</td>
+                <td>{tx.booking_code}</td>
                 <td>{tx.airline}</td>
                 <td>{tx.route}</td>
-                <td>{tx.billingDate}</td>
+                <td>{tx.billing_date}</td>
                 <td>{tx.amount}</td>
                 <td><span className={getStatusClass(tx.status)}>{tx.status}</span></td>
                 <td>
-                <select
+                  <select
                     value={tx.status}
                     className={`select-status status-${tx.status.toLowerCase()}`}
-                    onChange={(e) => handleStatusChange(idx, e.target.value)}
-                    >
-                    <option value="Confirmed" className="select-status status-confirmed">Confirmed</option>
-                    <option value="Pending" className="select-status status-pending">Pending</option>
-                    <option value="Cancelled" className="select-status status-cancelled">Cancelled</option>
-                </select>
-
+                    onChange={(e) => handleStatusChange(tx.transaction_id, e.target.value)}
+                  >
+                    <option value="completed" className="select-status status-confirmed">Completed</option>
+                    <option value="pending" className="select-status status-pending">Pending</option>
+                    <option value="cancelled" className="select-status status-cancelled">Cancelled</option>
+                  </select>
                 </td>
-                
+                <td>
+                  <button
+                    className="transaction-delete-button"
+                    onClick={() => handleDelete(tx.transaction_id)}
+                    title="Delete Transaction"
+                  >
+                    <FaTrash />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

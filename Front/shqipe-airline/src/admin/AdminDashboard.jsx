@@ -1,44 +1,90 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './AdminDashboard.css';
 import { FaPlaneDeparture, FaPlane, FaRegTimesCircle, FaDollarSign, FaChartLine } from 'react-icons/fa';
 import { PiChartLineDown } from 'react-icons/pi';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import world from './../images/world.png';
+import api from '../api/axios';
 
 const AdminDashboard = () => {
-  const completedFlights = 125;
-  const activeFlights = 80;
-  const canceledFlights = 25;
-  const totalRevenue = 15000;
-  const ticketSold = 12500;
-  const customerGrowth = 25;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [stats, setStats] = useState({
+    completedFlights: 0,
+    activeFlights: 0,
+    canceledFlights: 0,
+    totalRevenue: 0,
+    ticketSold: 0,
+    customerGrowth: 0,
+    ticketData: [],
+    revenueData: [],
+    popularDestinations: []
+  });
 
-  const ticketData = [
-    { name: 'Jan', tickets: 2000 },
-    { name: 'Feb', tickets: 3500 },
-    { name: 'Mar', tickets: 1800 },
-    { name: 'Apr', tickets: 3200 },
-    { name: 'May', tickets: 2900 },
-    { name: 'Jun', tickets: 3600 },
-    { name: 'Jul', tickets: 4000 },
-  ];
+  useEffect(() => {
+    const fetchDashboardStats = async () => {
+      try {
+        const response = await api.get('/admin/dashboard/stats');
+        setStats({
+          completedFlights: response.data.completed_flights,
+          activeFlights: response.data.active_flights,
+          canceledFlights: response.data.canceled_flights,
+          totalRevenue: response.data.total_revenue,
+          ticketSold: response.data.tickets_sold,
+          customerGrowth: response.data.customer_growth,
+          ticketData: response.data.ticket_data,
+          revenueData: response.data.revenue_data,
+          popularDestinations: response.data.popular_destinations
+        });
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching dashboard stats:', err);
+        setError(err.response?.data?.message || 'Failed to load dashboard statistics');
+        setLoading(false);
+      }
+    };
 
-  const revenueData = [
-    { name: 'Feb', income: 15000, expense: 6000 },
-    { name: 'Mar', income: 16000, expense: 7500 },
-    { name: 'Apr', income: 15500, expense: 7000 },
-    { name: 'May', income: 18500, expense: 8000 },
-    { name: 'Jun', income: 17800, expense: 7200 },
-    { name: 'Jul', income: 20000, expense: 6800 },
-  ];
+    fetchDashboardStats();
+  }, []);
+
+  if (loading) {
+    return <div className="admin-dashboard">Loading dashboard data...</div>;
+  }
+
+  if (error) {
+    return <div className="admin-dashboard">Error: {error}</div>;
+  }
 
   return (
     <div className="admin-dashboard">
       <div className="stats-grid">
-        <InfoCard title="Completed Flights" value={completedFlights} change="1.35%" icon={<FaPlaneDeparture />} up />
-        <InfoCard title="Active Flights" value={activeFlights} change="3.68%" icon={<FaPlane />} up />
-        <InfoCard title="Canceled Flights" value={canceledFlights} change="1.45%" icon={<FaRegTimesCircle />} />
-        <InfoCard title="Total Revenue" value={`$${totalRevenue.toLocaleString()}`} change="5.94%" icon={<FaDollarSign />} up />
+        <InfoCard 
+          title="Completed Flights" 
+          value={stats.completedFlights} 
+          change="1.35%" 
+          icon={<FaPlaneDeparture />} 
+          up 
+        />
+        <InfoCard 
+          title="Active Flights" 
+          value={stats.activeFlights} 
+          change="3.68%" 
+          icon={<FaPlane />} 
+          up 
+        />
+        <InfoCard 
+          title="Canceled Flights" 
+          value={stats.canceledFlights} 
+          change="1.45%" 
+          icon={<FaRegTimesCircle />} 
+        />
+        <InfoCard 
+          title="Total Revenue" 
+          value={`$${stats.totalRevenue.toLocaleString()}`} 
+          change="5.94%" 
+          icon={<FaDollarSign />} 
+          up 
+        />
       </div>
 
       <div className="dashboard-grid">
@@ -46,14 +92,7 @@ const AdminDashboard = () => {
           <h4>Popular Destinations</h4>
           <img src={world} alt="World Map" className="map-img" />
           <div className="destination-stats">
-            {[
-              ['Mexico', '24%'],
-              ['Canada', '18%'],
-              ['United Kingdom', '16%'],
-              ['India', '12%'],
-              ['France', '9%'],
-              ['Australia', '7%'],
-            ].map(([country, percent]) => (
+            {stats.popularDestinations.map(([country, percent]) => (
               <div key={country} className="destination">
                 <span>{country}</span>
                 <span>{percent}</span>
@@ -65,9 +104,9 @@ const AdminDashboard = () => {
         <div className="charts-row">
           <div className="chart-card">
             <h4>Ticket Sales</h4>
-            <h2>{ticketSold.toLocaleString()} <span>Tickets Sold</span></h2>
+            <h2>{stats.ticketSold.toLocaleString()} <span>Tickets Sold</span></h2>
             <ResponsiveContainer width="100%" height={150}>
-              <LineChart data={ticketData}>
+              <LineChart data={stats.ticketData}>
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
@@ -79,7 +118,7 @@ const AdminDashboard = () => {
           <div className="chart-card">
             <h4>Revenue Growth</h4>
             <ResponsiveContainer width="100%" height={180}>
-              <LineChart data={revenueData}>
+              <LineChart data={stats.revenueData}>
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
@@ -93,9 +132,9 @@ const AdminDashboard = () => {
           <div className="growth-card">
             <h4>Customer Growth</h4>
             <div className="growth-gauge">
-              <div className="needle" style={{ transform: `rotate(${customerGrowth * 1.8}deg)` }} />
+              <div className="needle" style={{ transform: `rotate(${stats.customerGrowth * 1.8}deg)` }} />
             </div>
-            <h2>{customerGrowth}%</h2>
+            <h2>{stats.customerGrowth}%</h2>
             <p>From Last Month</p>
           </div>
         </div>

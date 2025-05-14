@@ -291,6 +291,7 @@ const AcdUpdateFlight = () => {
                 <option value="on-time">On Time</option>
                 <option value="delayed">Delayed</option>
                 <option value="cancelled">Cancelled</option>
+                <option value="completed">Completed</option>
               </select>
             </div>
             <div className="modal-actions">

@@ -96,14 +96,14 @@ const BookFlight = () => {
         seat_number: formData.seat_number,
         extra_baggage: formData.extra_baggage > 0 ? 1 : 0,
         travel_insurance: formData.travel_insurance ? 1 : 0,
-        booking_status: 'confirmed',
+        booking_status: 'pending',
         total_price: priceBreakdown.total.toString()
       };
 
       const response = await api.post(`/user/${user.user_id}/bookings`, bookingData);
       
       if (response.data) {
-        navigate('/passenger-dashboard/booking-confirmation', { 
+        navigate('/passenger-dashboard/passanger-payment', { 
           state: { 
             flight, 
             formData,
