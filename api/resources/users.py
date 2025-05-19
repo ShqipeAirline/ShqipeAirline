@@ -14,7 +14,7 @@ from datetime import datetime
 from DB import db
 # Import all three models (adjust the names according to your models)
 from models import User, Admin, AirControlDep
-from schemas import PlainUserSchema
+from schemas import PlainUserSchema, UserUpdateSchema
 from blocklist import BLOCKLIST
 
 # Login schema now only requires email and password
@@ -82,6 +82,26 @@ class UserResource(MethodView):
         except SQLAlchemyError:
             abort(400, message="Something went wrong when deleting the user")
         return {"message": "User deleted successfully."}, 200
+
+    @jwt_required()
+    @blp.arguments(UserUpdateSchema)
+    @blp.response(200, UserUpdateSchema)
+    def put(self, user_data, user_id):
+        admin_required()
+        user = User.query.get_or_404(user_id)
+        # Update fields if present
+        for field in ["first_name", "last_name", "email", "role", "phone_number", "date_of_birth", "account_status"]:
+            if field in user_data:
+                setattr(user, field, user_data[field])
+        # If password is present, hash it
+        if "password" in user_data and user_data["password"]:
+            user.password = pbkdf2_sha256.hash(user_data["password"])
+        try:
+            db.session.commit()
+        except SQLAlchemyError:
+            db.session.rollback()
+            abort(400, message="Could not update user.")
+        return user
 
 def get_identity(user):
     """
@@ -205,3 +225,21 @@ class UserList(MethodView):
             return users
         except SQLAlchemyError as e:
             abort(500, message=f"Error fetching users: {str(e)}")
+
+    @jwt_required()
+    @blp.arguments(PlainUserSchema)
+    @blp.response(201, PlainUserSchema)
+    def post(self, user_data):
+        # Check for unique email
+        if User.query.filter_by(email=user_data["email"]).first():
+            abort(409, message="Email already exists.")
+        # Hash password
+        user_data["password"] = pbkdf2_sha256.hash(user_data["password"])
+        user = User(**user_data)
+        db.session.add(user)
+        try:
+            db.session.commit()
+        except SQLAlchemyError:
+            db.session.rollback()
+            abort(400, message="Could not create user.")
+        return user

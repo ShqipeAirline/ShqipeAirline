@@ -197,10 +197,11 @@ class UserSchema(PlainUserSchema):
 
 class UserUpdateSchema(Schema):
     user_id = fields.Int(dump_only=True)
-    first_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
-    last_name = fields.Str(required=True, validate=validate.Length(min=1, max=50))
-    email = fields.Email(required=True)
-    birthday = fields.Date(required=True)
-    gender = fields.Str(required=True, validate=validate.OneOf(['Male', 'Female', 'Other']))
-    password = fields.Str(load_only=True, validate=validate.Length(min=6))
-    role = fields.Str(dump_only=True)
+    first_name = fields.Str()
+    last_name = fields.Str()
+    email = fields.Email()
+    password = fields.Str(load_only=True)
+    phone_number = fields.Str()
+    account_status = fields.Int()
+    date_of_birth = fields.Date()
+    role = fields.Str()
