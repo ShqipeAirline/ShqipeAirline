@@ -16,6 +16,7 @@ const AcdUpdateFlight = () => {
   const fetchFlights = async () => {
     try {
       const response = await axios.get('/flights');
+      console.log(response.data);
       setSearchResults(response.data);
     } catch (error) {
       console.error('Error fetching flights:', error);

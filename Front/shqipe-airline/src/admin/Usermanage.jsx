@@ -164,10 +164,28 @@ export default function UserManage() {
   const handleDelete = async (user) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      const role = user.role || user.status;
-      const idField = roleEndpoints[roleMapping[role]].idField;
+      // Determine the role based on the user object properties
+      let dbRole;
+      if (user.admin_id) {
+        dbRole = 'admin';
+      } else if (user.staff_id) {
+        dbRole = 'air control staff';
+      } else {
+        dbRole = 'user';
+      }
+      
+      const idField = roleEndpoints[dbRole].idField;
       const id = user[idField];
-      await api.delete(roleEndpoints[roleMapping[role]].delete(id));
+      
+      console.log('Deleting user:', {
+        user,
+        dbRole,
+        idField,
+        id,
+        endpoint: roleEndpoints[dbRole].delete(id)
+      });
+      
+      await api.delete(roleEndpoints[dbRole].delete(id));
       fetchAllUsers();
     } catch (error) {
       console.error('Delete user error:', {
@@ -175,7 +193,7 @@ export default function UserManage() {
         data: error.response?.data,
         message: error.message
       });
-      alert("Failed to delete user");
+      alert(error.response?.data?.message || "Failed to delete user");
     }
   };
 

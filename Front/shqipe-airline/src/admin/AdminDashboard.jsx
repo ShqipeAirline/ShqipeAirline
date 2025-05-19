@@ -7,6 +7,7 @@ import world from './../images/world.png';
 import api from '../api/axios';
 
 const AdminDashboard = () => {
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [stats, setStats] = useState({
@@ -36,6 +37,7 @@ const AdminDashboard = () => {
           revenueData: response.data.revenue_data,
           popularDestinations: response.data.popular_destinations
         });
+        console.log(response.data);
         setLoading(false);
       } catch (err) {
         console.error('Error fetching dashboard stats:', err);
