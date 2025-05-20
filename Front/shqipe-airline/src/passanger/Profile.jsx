@@ -59,8 +59,7 @@ export default function Profile() {
         first_name: editUser.first_name,
         last_name: editUser.last_name,
         email: editUser.email,
-        birthday: editUser.date_of_birth,
-        gender: editUser.gender || 'Male',
+        date_of_birth: editUser.date_of_birth,
         password: editUser.password || undefined
       };
 
@@ -174,15 +173,6 @@ export default function Profile() {
                 onChange={(e) => setEditUser({ ...editUser, date_of_birth: e.target.value })}
                 required
               />
-              <select
-                value={editUser.gender || 'Male'}
-                onChange={(e) => setEditUser({ ...editUser, gender: e.target.value })}
-                required
-              >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
               <input
                 type="email"
                 value={editUser.email}
