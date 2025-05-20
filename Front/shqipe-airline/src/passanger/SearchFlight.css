@@ -1,119 +1,129 @@
 .schedule-page {
     padding: 20px;
-  }
+    max-width: 100%;
+    overflow-x: hidden;
+}
   
-  .schedule-page h1 {
+.schedule-page h1 {
     margin-bottom: 30px;
     color: #333;
     font-size: 24px;
-  }
+}
   
-  .schedule-content {
+.schedule-content {
     background: #fff;
     border-radius: 15px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 2px #E4C779 solid;
     margin-bottom: 16px;
-  } 
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
   
-  
-  
-  .schedule-info
-  {
+.schedule-info {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    
-  }
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
   
-  .info-flight-route{
+.info-flight-route {
     padding-top: 25px;
+    min-width: 100px;
+    flex: 0 0 auto;
+}
   
-  }
-  
-  .info-flight-route h6{
+.info-flight-route h6 {
     text-align: center;
     margin-top: 0px;
     color: #84827E;
-  }
+}
   
-  .info-flight h5{
+.info-flight h5 {
     margin-top: -10px;
     text-align: center;
     color: #84827E;
-  }
+}
   
-  .divider{
-    width:100%;
+.divider {
+    width: 100%;
     padding-bottom: 20px;
-  }
+}
   
-  .book-button{
-    margin-left: 20px;
-    padding: 10px;
-    color:white;
-  
+.book-button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    color: white;
     text-decoration: none;
-    background-color:#030522;
+    background-color: #030522;
     border: 1px solid #030522;
     border-radius: 15px;
-  }
+    white-space: nowrap;
+}
   
-  
-  
-  .flight-search-container {
+.flight-search-container {
     padding: 16px;
-    max-width: 100%;
+    width: 100%;
     margin: 2.5rem auto;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: center;
-  }
+    overflow-x: hidden;
+}
   
-  .flight-search-fields {
+.flight-search-fields {
     display: flex;
-    gap: 80px;
-  }
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
   
-  .flight-search-group {
+.flight-search-group {
     display: flex;
     flex-direction: column;
     gap: 5px;
-  }
+    min-width: 200px;
+    max-width: 300px;
+}
   
-  .flight-search-group label {
+.flight-search-group label {
     font-size: 0.875rem;
     color: #555;
-  }
+}
   
-  .flight-search-group input {
+.flight-search-group input {
     border: 1px solid #ccc;
     padding: 8px;
     border-radius: 4px;
     font-weight: 600;
-  }
+}
   
-  .swap-button {
+.swap-button {
     background-color: #f0f0f0;
     padding: 8px;
     border-radius: 4px;
     cursor: pointer;
     color: #555;
-  }
+}
   
-  .search-button {
+.search-button {
     background-color: black;
     color: white;
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
-  }
+}
   
-  
-  .flight-search-group select {
+.flight-search-group select {
     padding: 10px;
     font-size: 16px;
     border: 1px solid white;
@@ -123,13 +133,12 @@
     max-width: 250px;
     box-sizing: border-box; 
     transition: all 0.3s ease-in-out;
-  }
+}
   
-  
-  .flight-search-group input,
-  .flight-search-group select,
-  .search-button,
-  .swap-button {
+.flight-search-group input,
+.flight-search-group select,
+.search-button,
+.swap-button {
     font-family: Arial, sans-serif; 
     font-size: 14px; 
     padding: 6px 12px; 
@@ -137,51 +146,83 @@
     border: 1px solid #ccc; 
     box-sizing: border-box; 
     transition: all 0.3s ease-in-out;
-  }
+}
 
 .country-info {
-  font-size: 0.9rem;
-  color: #666;
-  margin-top: 0.2rem;
-  font-style: italic;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.2rem;
+    font-style: italic;
 }
 
 .info-flight {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 0.5rem;
+    min-width: 0;
+    flex: 1;
 }
 
 .flight-date {
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 0.2rem;
-  font-weight: 500;
-  white-space: nowrap;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.2rem;
+    font-weight: 500;
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .flight-price {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0 1.5rem;
-  border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    border-right: 1px solid #e0e0e0;
+    min-width: 100px;
 }
 
 .price-label {
-  font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 0.2rem;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.2rem;
 }
 
 .price-amount {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: #2c5282;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c5282;
+}
+
+@media (max-width: 768px) {
+    .schedule-info {
+        justify-content: center;
+    }
+    
+    .info-flight {
+        flex: 0 0 auto;
+    }
+    
+    .flight-search-fields {
+        gap: 10px;
+    }
+    
+    .flight-search-group {
+        min-width: 150px;
+    }
+    
+    .schedule-content {
+        justify-content: center;
+    }
+    
+    .flight-price {
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
 }
