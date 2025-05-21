@@ -25,7 +25,9 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     
+    // Don't attempt refresh on login endpoint or if already retrying
     if (
+      originalRequest.url === '/login' ||
       originalRequest.url === '/refresh' ||
       originalRequest._retry ||
       !error.response ||
