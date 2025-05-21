@@ -37,7 +37,6 @@ export default function UserManage() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editUser, setEditUser] = useState(null);
-  const [isAdd, setIsAdd] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -98,7 +97,6 @@ export default function UserManage() {
       gender: "Male",
       role: "user"
     });
-    setIsAdd(true);
     setModalOpen(true);
   };
 
@@ -127,15 +125,17 @@ export default function UserManage() {
         payload = {
           ...basePayload,
           username: editUser.email.split('@')[0],
-          phone_number: editUser.phone_number,
+          phone_number: editUser.phone_number || null,
           department: 'Flight Operations',
           admin_id: 1
         };
       } else {
+        // For regular users
         payload = {
           ...basePayload,
-          phone_number: editUser.phone_number,
-          date_of_birth: editUser.date_of_birth
+          phone_number: editUser.phone_number || null,
+          date_of_birth: editUser.date_of_birth || null,
+          account_status: 1  // Active by default
         };
       }
 
@@ -148,7 +148,8 @@ export default function UserManage() {
         }
       });
 
-      await api.post(endpoint, payload);
+      const response = await api.post(endpoint, payload);
+      console.log('User added successfully:', response.data);
       setModalOpen(false);
       fetchAllUsers();
     } catch (error) {

@@ -204,7 +204,7 @@ const PassengerPayment = () => {
                     name="expirationYear"
                     value={paymentFormData.expirationYear}
                     onChange={handleInputChange}
-                    placeholder="YY"
+                    placeholder="YYYY"
                     required
                   />
                 </div>
