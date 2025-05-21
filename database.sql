@@ -48,7 +48,7 @@ CREATE TABLE Payment_Methods
     created_at          DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          DATETIME ON UPDATE CURRENT_TIMESTAMP,
     
-    FOREIGN KEY (user_id) REFERENCES User(user_id)
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE
 );
 
 
@@ -61,7 +61,7 @@ CREATE TABLE Transaction
     transaction_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     payment_method_id INT NOT NULL,
     PRIMARY KEY (transaction_id),
-    FOREIGN KEY (payment_method_id) REFERENCES Payment_Methods(payment_method_id)
+    FOREIGN KEY (payment_method_id) REFERENCES Payment_Methods(payment_method_id) ON DELETE CASCADE
 );
 
 
@@ -103,7 +103,7 @@ CREATE TABLE Air_Control_Dep
     deleted_at DATETIME,
     PRIMARY KEY (staff_id),
     UNIQUE (username),
-    FOREIGN KEY (admin_id) REFERENCES Admin(admin_id)
+    FOREIGN KEY (admin_id) REFERENCES Admin(admin_id) ON DELETE CASCADE
 );
 
 
@@ -132,7 +132,7 @@ CREATE TABLE Bookings
     total_price DECIMAL(10,2) NOT NULL,
     user_id INT NOT NULL,
     PRIMARY KEY (bookings_id),
-    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
     FOREIGN KEY (flight_id) REFERENCES Flights(flight_id) ON DELETE CASCADE
 );
 
@@ -146,7 +146,7 @@ CREATE TABLE Feedback
     feedback_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     user_id INT NOT NULL,
     PRIMARY KEY (feedback_id),
-    FOREIGN KEY (user_id) REFERENCES User(user_id),
+    FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
     FOREIGN KEY (flight_id) REFERENCES Flights(flight_id) ON DELETE CASCADE
 );
 

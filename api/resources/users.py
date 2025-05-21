@@ -74,21 +74,54 @@ class UserResource(MethodView):
 
     @jwt_required()
     def delete(self, user_id):
-        admin_required()
-        user = User.query.get_or_404(user_id)
         try:
+            # Check admin role
+            claims = get_jwt()
+            if claims.get("role") != "admin":
+                abort(403, message="Admin privileges required.")
+
+            # Get user and check if exists
+            user = User.query.get_or_404(user_id)
+            
+            # Check for related records before deletion
+            bookings_count = len(user.bookings)
+            payment_methods_count = len(user.payment_methods)
+            feedbacks_count = len(user.feedbacks)
+            
+            # Try to delete
             db.session.delete(user)
             db.session.commit()
-        except SQLAlchemyError:
-            abort(400, message="Something went wrong when deleting the user")
-        return {"message": "User deleted successfully."}, 200
+            
+            return {
+                "message": "User deleted successfully",
+                "details": {
+                    "deleted_bookings": bookings_count,
+                    "deleted_payment_methods": payment_methods_count,
+                    "deleted_feedbacks": feedbacks_count
+                }
+            }, 200
+            
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            error_message = str(e)
+            if "foreign key constraint fails" in error_message.lower():
+                abort(400, message="Cannot delete user because they have related records in other tables")
+            else:
+                abort(400, message=f"Database error: {error_message}")
+        except Exception as e:
+            db.session.rollback()
+            abort(500, message=f"Unexpected error: {str(e)}")
 
     @jwt_required()
     @blp.arguments(UserUpdateSchema)
     @blp.response(200, UserUpdateSchema)
     def put(self, user_data, user_id):
-        admin_required()
+        claims = get_jwt()
         user = User.query.get_or_404(user_id)
+        
+        if claims.get("role") != "admin" and str(claims.get("user_id")) != str(user_id):
+            abort(403, message="You can only update your own profile.")
+            
         # Update fields if present
         for field in ["first_name", "last_name", "email", "role", "phone_number", "date_of_birth", "account_status"]:
             if field in user_data:

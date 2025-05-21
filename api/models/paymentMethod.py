@@ -15,5 +15,5 @@ class PaymentMethod(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=db.func.current_timestamp())
 
     # Relationships
-    transactions = db.relationship('Transaction', backref='payment_method', lazy=True)
+    transactions = db.relationship('Transaction', backref='payment_method', lazy=True, cascade='all, delete-orphan')
     user = db.relationship('User', back_populates='payment_methods', lazy=True)

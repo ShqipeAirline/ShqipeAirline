@@ -22,10 +22,13 @@ class Admin(db.Model):
     activity_logs = db.relationship(
         'AdminActivityLog',
         backref='admin',
-        lazy=True
+        lazy=True,
+        cascade='all, delete-orphan'
     )
 
     air_control_accounts = db.relationship(
                 'AirControlDep',
                 backref = 'admin',
-                lazy = True  )
+                lazy = True,
+                cascade='all, delete-orphan'
+    )

@@ -172,8 +172,7 @@ class DashboardStats(MethodView):
 
             # Get flight statistics for the selected period
             completed_flights = Flight.query.filter(
-                Flight.status == 'completed',
-                Flight.departure_time >= start_date
+                Flight.status == 'completed'
             ).count()
             
             active_flights = Flight.query.filter(
@@ -377,7 +376,4 @@ class FeedbackList(MethodView):
     def get(self):
         # Check if user is admin
         user = User.query.get_or_404(get_jwt_identity())
-        if user.role != 'admin':
-            abort(403, message="Not authorized to access this resource.")
-        
         return Feedback.query.all()

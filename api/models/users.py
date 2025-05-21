@@ -15,6 +15,6 @@ class User(db.Model):
     last_login = db.Column(db.DateTime)
 
     # Relationships
-    bookings = db.relationship('Booking', back_populates='user', lazy=True)
-    feedbacks = db.relationship('Feedback', back_populates='user', lazy=True)
-    payment_methods = db.relationship('PaymentMethod', back_populates='user', lazy=True)
+    bookings = db.relationship('Booking', back_populates='user', lazy=True, cascade='all, delete-orphan')
+    feedbacks = db.relationship('Feedback', back_populates='user', lazy=True, cascade='all, delete-orphan')
+    payment_methods = db.relationship('PaymentMethod', back_populates='user', lazy=True, cascade='all, delete-orphan')
