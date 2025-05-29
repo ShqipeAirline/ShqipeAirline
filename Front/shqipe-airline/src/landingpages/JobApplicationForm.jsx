@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import './JobApplicationForm.css';
 
 const JobApplicationForm = () => {
@@ -9,38 +10,46 @@ const JobApplicationForm = () => {
     email: '',
     position: 'Pilot',
     additionalInfo: '',
-    cv: null,
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'cv') {
-      setFormData({ ...formData, cv: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const { firstName, lastName, contactNumber, email, cv } = formData;
-  
-  
-    if (!firstName || !lastName || !contactNumber || !email || !cv) {
-      alert('Please fill in all required fields and upload your CV.');
+    const { firstName, lastName, contactNumber, email } = formData;
+
+    if (!firstName || !lastName || !contactNumber || !email) {
+      alert('Please fill in all required fields.');
       return;
     }
-  
-    console.log('Form submitted:', formData);
-    alert('Your application has been submitted successfully!');
-  
-    setFormData(initialFormData);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = null;
+
+    try {
+      const templateParams = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        contact_number: formData.contactNumber,
+        email: formData.email,
+        position: formData.position,
+        additional_info: formData.additionalInfo,
+      };
+
+      await emailjs.send(
+        'service_4hpm5vf',         // ✅ Your EmailJS Service ID
+        'template_vlp78xh',        // ✅ Your Template ID
+        templateParams,
+        'zLMpr5EtZYvsER6Rr'        // ✅ Your Public Key
+      );
+
+      alert('Your application has been submitted successfully!');
+      setFormData(initialFormData);
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('Failed to submit application. Try again later.');
     }
   };
 
@@ -52,22 +61,46 @@ const JobApplicationForm = () => {
         <div className="form-row">
           <div className="form-group">
             <label>First Name</label>
-            <input type="text" name="firstName" onChange={handleChange} value={formData.firstName} />
+            <input
+              type="text"
+              name="firstName"
+              onChange={handleChange}
+              value={formData.firstName}
+              required
+            />
           </div>
           <div className="form-group">
             <label>Last Name</label>
-            <input type="text" name="lastName" onChange={handleChange} value={formData.lastName} />
+            <input
+              type="text"
+              name="lastName"
+              onChange={handleChange}
+              value={formData.lastName}
+              required
+            />
           </div>
         </div>
 
         <div className="form-row">
           <div className="form-group">
             <label>Contact Number</label>
-            <input type="text" name="contactNumber" onChange={handleChange} value={formData.contactNumber} />
+            <input
+              type="text"
+              name="contactNumber"
+              onChange={handleChange}
+              value={formData.contactNumber}
+              required
+            />
           </div>
           <div className="form-group">
             <label>Email Address</label>
-            <input type="email" name="email" onChange={handleChange} value={formData.email} />
+            <input
+              type="email"
+              name="email"
+              onChange={handleChange}
+              value={formData.email}
+              required
+            />
           </div>
         </div>
 
@@ -80,15 +113,15 @@ const JobApplicationForm = () => {
               <option value="Flight Attendant">Flight Attendant</option>
             </select>
           </div>
-          <div className="form-group">
-            <label>Upload Your CV</label>
-            <input type="file" name="cv" onChange={handleChange} ref={fileInputRef} />
-          </div>
         </div>
 
         <div className="form-group full-width">
           <label>Additional Information</label>
-          <textarea name="additionalInfo" onChange={handleChange} value={formData.additionalInfo}></textarea>
+          <textarea
+            name="additionalInfo"
+            onChange={handleChange}
+            value={formData.additionalInfo}
+          ></textarea>
         </div>
 
         <button type="submit" className="confirm-button">
@@ -100,4 +133,3 @@ const JobApplicationForm = () => {
 };
 
 export default JobApplicationForm;
-

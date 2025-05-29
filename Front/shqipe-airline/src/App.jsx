@@ -27,6 +27,7 @@ import UserManage from './admin/Usermanage'
 import AdminReports from './admin/AdminReports'
 import FeedbackManage from './admin/FeedbackManage'
 import PassengerDashboard from './pages/passenger/PassengerDashboard';
+import FlightDetailsP from './passanger/FlightDetailsP'
 import PassagerLayout from './layouts/PassagerLayout'
 import Profile from './passanger/Profile'
 import SearchFlight from './passanger/SearchFlight'
@@ -79,6 +80,7 @@ function App() {
           <Route path="profile" element={<Profile/>}/>
           <Route path="search" element={<SearchFlight/>}/>
           <Route path="book-flight" element={<BookFlight/>}/>
+          <Route path="view-flight/:flight_id" element={<FlightDetailsP/>}/>
           <Route path="feedback" element={<PassangerFeedback />} />
           <Route path="feedbacks" element={<UserFeedbacks />} />
           <Route path="booking-confirmation" element={<BookingConfirmation />} />

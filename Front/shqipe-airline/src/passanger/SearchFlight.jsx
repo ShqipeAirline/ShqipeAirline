@@ -96,6 +96,13 @@ const SearchFlight = () => {
             >
               Book 
             </Link>
+            <Link 
+              to={`/passenger-dashboard/view-flight/${flight.flight_id}`}
+              state={{ flight }} 
+              className="book-button"
+            >
+              View details 
+            </Link>
           </div>
         ))
       )}
