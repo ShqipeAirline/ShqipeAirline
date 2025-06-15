@@ -72,7 +72,7 @@ Below are some screenshots showcasing key features of the system:
 ### 🔐 Login Page
 ![image](https://github.com/user-attachments/assets/549b1be6-5cf1-426b-a234-67c4b9755826)
 
-### Passenger Dashboard
+### 📊 Passenger Dashboard
 ![image](https://github.com/user-attachments/assets/87d47c2a-5f4c-442b-892d-a06996504c59)
 
 ### ✈️ Flight Search
